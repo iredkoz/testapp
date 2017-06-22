@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        {% block head %}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="{{ url_for('static',filename='mycss.css') }}">
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+        {% endblock %}
+        <title>{% block title %}{{ Title }}{% endblock %}</title>
+    </head>
+    <body>
+        <div class="container-fluid">
+                <nav class="navbar navbar-toggleable-md fixed-top navbar-light">
+                    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle Menu">
+                        <i class="fa fa-bars fa-lg"></i>
+                    </button>
+                    <a class="navbar-brand" href="#">Kitchen</a>
+                    <div class="collapse navbar-collapse" id="mainMenu">
+                        <ul class="navbar-nav mr-auto mt-2 mt-md-0">
+                            <li class="nav-item {%if request.endpoint.endswith('index')%}active{%endif%}">
+                                <a class="nav-link" href="{{url_for('index')}}">Home<span class="sr-only"></span></a>
+                            </li>
+                            <li class="nav-item {%if request.endpoint.endswith('shopapp')%}active{%endif%}">
+                                <a class="nav-link" href="{{url_for('shopapp')}}">Shopping List<span class="sr-only"></span></a>
+                            </li>
+                            <li class="nav-item {%if request.endpoint.endswith('finapp')%}active{%endif%}">
+                                <a class="nav-link" href="{{url_for('finapp')}}">Finances<span class="sr-only"></span></a>
+                            </li>
+                            <li class="nav-item {%if request.endpoint.endswith('recepies')%}active{%endif%}">
+                                <a class="nav-link" href="{{url_for('recepies')}}"  >Recepies<span class="sr-only"></span></a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+        </div>
+        <div class="container-fliud">
+            <div class="row">
+                <div class="col-4 px-0 mx-0">
+                    <div id="leftMenuContainer" class="container-fluid py-2" style="background:#578CA9">
+                        <button type="button" class="btn">Button</button>
+                    </div>
+                </div>
+                <div class="col-8 px-0 mx-0">
+                    <div id="mainContentContainer" class="container-fluid py-2" style="background:#92B6D5">
+                        <button type="button" class="btn">Button</button>    
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% block content %}
+        {% endblock %}
+        <footer id="footer">
+            <div class="container-fluid py-2" style="background:">
+                <p class="text-center"><i class="fa fa-copyright"></i>Zubik 2017</p>
+            </div>
+        </footer>
+    </body>
+</html>
