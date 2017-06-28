@@ -3,6 +3,9 @@ from testapp import app
 import json
 import datetime
 
+units = ['lb','oz','gal','qt','pt','fl oz','kg','g','L','ml','box','each','bag','cart',
+         'm','cm','mm','inch','ft','yard']
+
 
 def flash_errors(form):
     for field, errors in form.errors.items():
@@ -16,7 +19,7 @@ def index():
 
 @app.route('/shopapp')
 def shopapp():
-    return render_template('shopapp.html')
+    return render_template('shopapp.html',units=units)
 
 @app.route('/finapp')
 def finapp():

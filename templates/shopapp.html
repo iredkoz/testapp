@@ -9,16 +9,53 @@
 {% block content %}
 <div class="container-fluid">
     <div class="row">
-        <nav class="col-3 sidebar bg-faded">
-            <ul class="nav nav-pills flex-column px-0">
-                <li class="nav-item"><a class="nav-link active" href="#">Lists</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Products</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Shops</a></li>
+        <nav class="col-12 topbar bg-faded" role="navigation" id="shopMenu">
+            <ul class="nav nav-pills flex-row px-0">
+                <li class="nav-item"><a class="nav-link active" aria-expanded="true" data-toggle="pill" role="pill" href="#lists">Lists</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="pill" role="pill" href="#categories">Categories</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="pill" role="pill" href="#shops">Shops</a></li>
             </ul>
         </nav>
-        <main class="col-9">
-            <h1>Shopping thingy</h1>
-        </main>
+    </div>
+    <div class="tab-content">
+        <div id="lists" class="tab-pane fade-in active">
+            <ul id="lists" class="list-group">
+            </ul>
+        </div>
+        <div id="categories" class="tab-pane fade-in">
+            <ul id="categories" class="list-group">
+            </ul>
+        </div>
+        <div id="shops" class="tab-pane fade-in">
+            <ul id="shops" class="list-group">
+            </ul>
+        </div>
     </div>
 </div>
+<script type="text/javascript">
+    var units = {{ units|safe }}
+    $(document).ready(function(){
+        $('a[data-toggle="pill"]').on('shown.bs.tab',function(e){
+            var active_pane = '#'+$('div.tab-pane.active > ul').attr('id');
+            console.log(active_pane);
+            switch(active_pane){
+                case '#lists':
+                    $('ul'+active_pane).empty();
+                    $.each(units,function(i,v){
+                        $('<li class="list-group-item">' + v + '</li>').appendTo($('ul'+ active_pane));
+                    });
+                    break;
+                default:
+                    $('ul'+active_pane).empty();
+                    $('ul'+active_pane).append('<li class="list-group-item"> Default </li>');
+            }
+
+        });
+
+        $('a').trigger('shown.bs.tab');
+
+    });
+
+
+</script>
 {% endblock %}
