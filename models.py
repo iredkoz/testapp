@@ -28,7 +28,7 @@ class Product(db.Model):
     __tablename__='product'
     id = db.Column('id', db.Integer, primary_key=True)
     name = db.Column('name',db.String(50))
-    icon = db.Column('icon',db.String(255)) # icon name or img paht?
+    icon = db.Column('icon',db.String(255)) # icon name or img path?
     note = db.Column('note',db.String(255))
     category_id = db.Column('category_id',db.Integer,db.ForeignKey('category.id'))
     size = db.Column('size',db.Numeric(precision=2, asdecimal=False, decimal_return_scale=None))
@@ -53,7 +53,6 @@ class Item(db.Model):
     shop = db.relationship('Shop',foreign_keys=shop_id, backref='items')
     slist = db.relationship('Slist', foreign_keys=slist_id, backref='items')
     
-    
 class Shop(db.Model):
     __tablename__='shop'
     id = db.Column('id',db.Integer,primary_key=True)
@@ -62,5 +61,8 @@ class Shop(db.Model):
 
 class ProductSchema(Schema):
     class Meta:
-        fields=('id','name','description','calories')
+        fields=('id','name','note','size','unit')
 
+class CategorySchema(Schema):
+    class Meta:
+        fields=('id','name','note')

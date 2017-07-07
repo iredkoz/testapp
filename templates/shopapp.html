@@ -20,22 +20,76 @@
     <div class="tab-content">
         <div id="lists" class="tab-pane fade-in active">
             <ul id="lists" class="list-group">
+                {% for list in lists %}
+                <li class="list-group-item">{{ list.name }}</li>
+                {% endfor %}
+
             </ul>
+            <button class="btn btn-outline-primary my-2" style="border-radius:24px" data-toggle="modal" data-target="#newList">+New List</button>
         </div>
         <div id="categories" class="tab-pane fade-in">
+            <h1>Categories</h1>
             <ul id="categories" class="list-group">
             </ul>
         </div>
         <div id="shops" class="tab-pane fade-in">
+            <h1>Shops</h1>
             <ul id="shops" class="list-group">
             </ul>
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="newList" tabindex="-1" role="dialog" aria-labelledby="newList" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" method="post" action='/new-list'>
+            <div class="modal-header">
+                <h5 class="modal-title" id="newList">Add new list</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {#<ul>
+                {% for list in lists %}
+                <li>
+                    {{ list.name }} - {{list.creation_date}}
+                    <form action="{{ url_for('delete_list', list_id=list.id) }}" method="post">
+                        <button class="btn btn-link"><span class="fa fa-trash-o fa-2x"></span></button>
+                    </form>
+                </li>
+                {% endfor %}
+                </ul>#}
+                <form method="post" action='/new-list' id="newListForm">
+                    {{ listForm.csrf_token }}
+                    {{ listForm.name(required='required') }}
+                    {% for error in listForm.errors.name %}
+                       <span style="color: red;">[{{error}}]</span>
+                    {% endfor %}
+                    {{ listForm.note }}
+                    <button type="submit" class="btn btn-primary my-2">SAVE</button>
+                </form>
+
+            </div>
+            <div class ="modal-footer">
+                <button type="button" class="close ml-auto" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Back</span></button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 <script type="text/javascript">
     var units = {{ units|safe }}
+    
     $(document).ready(function(){
-        $('a[data-toggle="pill"]').on('shown.bs.tab',function(e){
+        var listFormErrors = {% if listForm.errors.name %} true {% else %} false {% endif %}
+        if (listFormErrors){
+            $('#newList').modal('show');
+            
+        }
+        /*        $('a[data-toggle="pill"]').on('shown.bs.tab',function(e){
             var active_pane = '#'+$('div.tab-pane.active > ul').attr('id');
             console.log(active_pane);
             switch(active_pane){
@@ -53,7 +107,7 @@
         });
 
         $('a').trigger('shown.bs.tab');
-
+*/        
     });
 
 
