@@ -1,5 +1,8 @@
+import os
 import sys
 
-sys.path.append('/var/www/testapp')
+path = '/var/www/testapp'
+if path not in sys.path:
+    sys.path.append(path)
 
-from testapp import app as application
+from run import app as application

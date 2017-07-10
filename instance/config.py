@@ -1,0 +1,2 @@
+SERCRET_KEY = 'super secret key'
+SQLALCHEMY_DATABASE_URI = 
