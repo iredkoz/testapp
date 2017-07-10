@@ -21,7 +21,15 @@
         <div id="lists" class="tab-pane fade-in active">
             <ul id="lists" class="list-group">
                 {% for list in lists %}
-                <li class="list-group-item">{{ list.name }}</li>
+                <div class="list-group-item">
+                    <div class="d-flex flex-row w-100 justify-content-end">
+                        <a href="#" class="mb-1">{{ list.name }}</a>
+                        <small class="mx-4">{{ list.date.strftime('%d %b %y') }}</small>
+                        <a class="btn btn-link ml-auto h-50" href="#"><i class="fa fa-edit fa-lg"></i></a>
+                        <button class="btn btn-link mx-2 h-50"><i class="fa fa-trash fa-lg"></i></button>
+                    </div>
+                    <p clas="mb-1">{{ list.note }}</p>
+                </div>
                 {% endfor %}
 
             </ul>
@@ -63,7 +71,7 @@
                     {{ listForm.csrf_token }}
                     {{ listForm.name(required='required') }}
                     {% for error in listForm.errors.name %}
-                       <span style="color: red;">[{{error}}]</span>
+                    <span style="color: red;">[{{error}}]</span>
                     {% endfor %}
                     {{ listForm.note }}
                     <button type="submit" class="btn btn-primary my-2">SAVE</button>
@@ -82,14 +90,14 @@
 
 <script type="text/javascript">
     var units = {{ units|safe }}
-    
+
     $(document).ready(function(){
         var listFormErrors = {% if listForm.errors.name %} true {% else %} false {% endif %}
         if (listFormErrors){
             $('#newList').modal('show');
-            
+
         }
-        /*        $('a[data-toggle="pill"]').on('shown.bs.tab',function(e){
+                                                                                  /*        $('a[data-toggle="pill"]').on('shown.bs.tab',function(e){
             var active_pane = '#'+$('div.tab-pane.active > ul').attr('id');
             console.log(active_pane);
             switch(active_pane){
@@ -108,7 +116,7 @@
 
         $('a').trigger('shown.bs.tab');
 */        
-    });
+                                                                                 });
 
 
 </script>
