@@ -2,7 +2,7 @@ from flask import render_template, request, redirect, flash,url_for, jsonify
 from . import shopapp
 import json
 import datetime
-from forms import ListForm, ItemForm, CategoryForm, ProductForm, units
+from forms import ListForm, ItemForm, CategoryForm, ProductForm, ShopForm, units
 from .. import db
 from ..models import Slist, Category, Product, Item, Shop
 
@@ -14,16 +14,18 @@ def flash_errors(form):
 
 @shopapp.route('/shopmain')
 def shop_main():
-    listForm=ListForm()
+    listForm = ListForm()
     itemForm = ItemForm()
     catForm = CategoryForm()
     prodForm = ProductForm()
+    shopForm = ShopForm()
     
-    lists=Slist.query.all()
-    cats=Category.query.all()
-    
-    return render_template('shopapp/shopapp.html',units=units,lists=lists,listForm=listForm,itemForm=itemForm,
-                           catForm=catForm,prodForm=prodForm, cats=cats)
+    lists = Slist.query.all()
+    cats = Category.query.all()
+    shops = Shop.query.all()
+    return render_template('shopapp/shopapp.html',units=units,lists=lists,listForm=listForm,
+                           itemForm=itemForm,catForm=catForm, prodForm=prodForm, 
+                           shopForm=shopForm, cats=cats,shops=shops)
 
 @shopapp.route('/_get_categories',methods=['GET'])
 def get_categories():
@@ -61,6 +63,19 @@ def newCat():
         else:
             cat = Category(name=name, note = catForm.note.data)
             db.session.add(cat)
+            db.session.commit()
+    return redirect(url_for('shopapp.shop_main'))
+
+@shopapp.route('/new-shop', methods=['POST'])
+def newShop():
+    shopForm = ShopForm()
+    name = shopForm.name.data
+    if catForm.validate_on_submit():
+        if Shop.query.filter_by(name=name).first():
+            flash('Shop already exists!','alert-danger')
+        else:
+            shop = Shop(name=name, note = shopForm.note.data)
+            db.session.add(shop)
             db.session.commit()
     return redirect(url_for('shopapp.shop_main'))
 

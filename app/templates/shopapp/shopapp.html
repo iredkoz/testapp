@@ -36,7 +36,6 @@
             <button class="btn btn-outline-primary my-2" style="border-radius:24px" data-toggle="modal" data-target="#newList">+New List</button>
         </div>
         <div id="categories" class="tab-pane fade-in">
-            <h1>Categories</h1>
             <ul id="categories" class="list-group">
                 {% for cat in cats %}
                 <div class="list-group-item">
@@ -52,12 +51,25 @@
             <button class="btn btn-outline-primary my-2" style="border-radius:24px" data-toggle="modal" data-target="#newCat">+New Category</button>
         </div>
         <div id="shops" class="tab-pane fade-in">
-            <h1>Shops</h1>
             <ul id="shops" class="list-group">
+                {% for shop in shops %}
+                <div class="list-group-item">
+                    <div class="d-flex flex-row w-100 justify-content-end">
+                        <a href="#" class="mb-1">{{ shop.name }}</a>
+                        <a class="btn btn-link ml-auto h-50" href="#"><i class="fa fa-edit fa-lg"></i></a>
+                        <button class="btn btn-link mx-2 h-50"><i class="fa fa-trash fa-lg"></i></button>
+                    </div>
+                    <p clas="mb-1">{{ shop.note }}</p>
+                </div>
+                {% endfor %} 
             </ul>
+            <button class="btn btn-outline-primary my-2" style="border-radius:24px" data-toggle="modal" data-target="#newShop">+New Shop</button>
+
         </div>
     </div>
 </div>
+
+{% from 'macros.html' import make_modal %}
 
 <div class="modal fade" id="newList" tabindex="-1" role="dialog" aria-labelledby="newList" aria-hidden="true">
     <div class="modal-dialog">
@@ -70,6 +82,7 @@
             <div class="modal-body">
 
                 <form method="post" action='/new-list' id="newListForm">
+                    
                     {{ listForm.csrf_token }}
                     <small class="my-0 py-0">{{ listForm.name.label(class='my-0') }}</small>
                     {{ listForm.name(required='required') }}
@@ -121,6 +134,16 @@
     </div>
 </div>
 
+{% call make_modal('newShop', 'Add new shop', '/new-shop', 'newShopForm')%}
+    {{ shopForm.csrf_token }}
+    <small class="my-0 py-0">{{ shopForm.name.label(class='my-0') }}</small>
+    {{ shopForm.name(required='required') }}
+    {% for error in shopForm.errors.name %}
+    <span style="color: red;">[{{error}}]</span>
+    {% endfor %}
+    <small class="my-0 py-0">{{ shopForm.note.label(class='my-0') }}</small>
+    {{ shopForm.note }}
+{% endcall %}
 
 
 <script type="text/javascript">
