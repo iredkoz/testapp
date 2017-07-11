@@ -15,8 +15,8 @@ def query_shop():
     return Shop.query
 
 class ListForm(FlaskForm):
-    name = StringField('List Name',render_kw={"placeholder":"ex.List1, List2...","class":"form-control"},validators=[DataRequired('Please enter list name!')])
-    note = TextAreaField('List Note', render_kw={"placeholder":"Notes...", "class":"form-control"})
+    name = StringField('List Name',render_kw={"placeholder":"ex.List1, List2...","class":"form-control mb-1"},validators=[DataRequired('Please enter list name!')])
+    note = TextAreaField('List Note', render_kw={"placeholder":"Notes...", "class":"form-control mb-1"})
 
 class CategoryForm(FlaskForm):
     name = StringField('Category Name',render_kw={"placeholder":"ex.fruits, veggies..","class":"form-control"},validators=[DataRequired('Please enter category name')])

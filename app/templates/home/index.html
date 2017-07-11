@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %} Main page {% endblock %}
+
+{% block head %}
+{{super()}}
+{% endblock %}
+
+
+{% block content %}
+<div class="embed-responsive embed-responsive-4by3">
+<iframe class = "embed-responsive-item" src="https://calendar.google.com/calendar/embed?showTitle=0&amp;showNav=0&amp;showPrint=0&amp;height=600&amp;wkst=2&amp;bgcolor=%23ffffff&amp;src=ilya.redkozubov%40gmail.com&amp;color=%231B887A&amp;src=family05832283629936738582%40group.calendar.google.com&amp;color=%2329527A&amp;src=en.usa%23holiday%40group.v.calendar.google.com&amp;color=%230F4B38&amp;ctz=America%2FNew_York" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe></div>
+
+{% endblock %}
