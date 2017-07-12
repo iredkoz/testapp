@@ -30,7 +30,7 @@ class ProductForm(FlaskForm):
     unit = SelectField('Unit', choices=[(item,item) for item in units])
     
 class ShopForm(FlaskForm):
-    name = StringField('Shop Name',render_kw={"placeholder":"ex.Meijer.."},validators=[DataRequired('Please enter shop name!')])
+    name = StringField('Shop Name',render_kw={"placeholder":"ex.Meijer..","class":"form-control"},validators=[DataRequired('Please enter shop name!')])
     note = TextAreaField('Shop Note', render_kw={"placeholder":"Notes..","class":"form-control"})
     
 class ItemForm(FlaskForm):

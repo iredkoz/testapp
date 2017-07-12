@@ -38,7 +38,6 @@ def show_list(slist):
     items = Item.query.filter_by(slist = Slist.query.filter_by(name=slist).first()).all()
     cats = Category.query.all()
     return render_template('shopapp/list.html',items=items, cats=cats)
-   
 
 @shopapp.route('/new-list', methods=['POST'])
 def newlist():
@@ -52,6 +51,17 @@ def newlist():
             db.session.add(slist)
             db.session.commit()
     return redirect(url_for('shopapp.shop_main'))
+
+@shopapp.route('/delete-list/<int:slist_id>', methods=['POST'] )
+def delList(slist_id):
+    if request.method == 'POST':
+        dlist = Slist.query.get(slist_id)
+        items = Item.query.filter_by(slist=dlist).all()
+        for item in items:
+            db.session.delete(item)
+        db.session.delete(dlist)
+        db.session.commit()
+    return ('',204)
 
 @shopapp.route('/new-cat', methods=['POST'])
 def newCat():
@@ -70,7 +80,7 @@ def newCat():
 def newShop():
     shopForm = ShopForm()
     name = shopForm.name.data
-    if catForm.validate_on_submit():
+    if shopForm.validate_on_submit():
         if Shop.query.filter_by(name=name).first():
             flash('Shop already exists!','alert-danger')
         else:

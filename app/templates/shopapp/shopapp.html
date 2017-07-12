@@ -25,8 +25,8 @@
                     <div class="d-flex flex-row w-100 justify-content-end">
                         <a href="{{ url_for('shopapp.show_list',slist=list.name) }}" class="mb-1">{{ list.name }}</a>
                         <small class="mx-4">{{ list.date.strftime('%d %b %y') }}</small>
-                        <a class="btn btn-link ml-auto h-50" href="#"><i class="fa fa-edit fa-lg"></i></a>
-                        <button class="btn btn-link mx-2 h-50"><i class="fa fa-trash fa-lg"></i></button>
+                        <button class="btn btn-link ml-auto h-50" href="#"><i class="fa fa-edit fa-lg"></i></button>
+                        <button id="delList" data-url="{{ url_for('shopapp.delList', slist_id=list.id) }}" class="btn btn-link mx-2 h-50 delList"><i class="fa fa-trash fa-lg"></i></button>
                     </div>
                     <p clas="mb-1">{{ list.note }}</p>
                 </div>
@@ -38,9 +38,9 @@
         <div id="categories" class="tab-pane fade-in">
             <ul id="categories" class="list-group">
                 {% for cat in cats %}
-                <div class="list-group-item">
-                    <div class="d-flex flex-row w-100 justify-content-end">
-                        <a href="#" class="mb-1">{{ cat.name }}</a>
+                <div class="list-group-item py-1">
+                    <div class="d-flex flex-row w-100 justify-content-end mt-1">
+                        <p class="mb-1">{{ cat.name }}</p>
                         <a class="btn btn-link ml-auto h-50" href="#"><i class="fa fa-edit fa-lg"></i></a>
                         <button class="btn btn-link mx-2 h-50"><i class="fa fa-trash fa-lg"></i></button>
                     </div>
@@ -53,9 +53,9 @@
         <div id="shops" class="tab-pane fade-in">
             <ul id="shops" class="list-group">
                 {% for shop in shops %}
-                <div class="list-group-item">
-                    <div class="d-flex flex-row w-100 justify-content-end">
-                        <a href="#" class="mb-1">{{ shop.name }}</a>
+                <div class="list-group-item py-1">
+                    <div class="d-flex flex-row w-100 justify-content-end mt-1">
+                        <p href="#" class="mb-1">{{ shop.name }}</p>
                         <a class="btn btn-link ml-auto h-50" href="#"><i class="fa fa-edit fa-lg"></i></a>
                         <button class="btn btn-link mx-2 h-50"><i class="fa fa-trash fa-lg"></i></button>
                     </div>
@@ -71,110 +71,55 @@
 
 {% from 'macros.html' import make_modal %}
 
-<div class="modal fade" id="newList" tabindex="-1" role="dialog" aria-labelledby="newList" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content" method="post" action='/new-list'>
-            <div class="modal-header">
-                <h5 class="modal-title" id="newList">Add new list</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-
-                <form method="post" action='/new-list' id="newListForm">
-                    
-                    {{ listForm.csrf_token }}
-                    <small class="my-0 py-0">{{ listForm.name.label(class='my-0') }}</small>
-                    {{ listForm.name(required='required') }}
-                    {% for error in listForm.errors.name %}
-                    <span style="color: red;">[{{error}}]</span>
-                    {% endfor %}
-                    <small class="my-0 py-0">{{ listForm.note.label(class='my-0') }}</small>
-                    {{ listForm.note }}
-                    <button type="submit" class="btn btn-primary my-2">SAVE</button>
-                </form>
-
-            </div>
-            <div class ="modal-footer">
-                <button type="button" class="close ml-auto" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Back</span></button>
-
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="newCat" tabindex="-1" role="dialog" aria-labelledby="newCat" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content" method="post" action='/new-cat'>
-            <div class="modal-header">
-                <h5 class="modal-title" id="newCat">Add new category</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-
-                <form method="post" action='/new-cat' id="newCatForm">
-                    {{ catForm.csrf_token }}
-                    <small class="my-0 py-0">{{ catForm.name.label(class='my-0') }}</small>
-                    {{ catForm.name(required='required') }}
-                    {% for error in catForm.errors.name %}
-                    <span style="color: red;">[{{error}}]</span>
-                    {% endfor %}
-                    <small class="my-0 py-0">{{ catForm.note.label(class='my-0') }}</small>
-                    {{ catForm.note }}
-                    <button type="submit" class="btn btn-primary my-2">SAVE</button>
-                </form>
-
-            </div>
-            <div class ="modal-footer">
-                <button type="button" class="close ml-auto" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Back</span></button>
-
-            </div>
-        </div>
-    </div>
-</div>
-
-{% call make_modal('newShop', 'Add new shop', '/new-shop', 'newShopForm')%}
-    {{ shopForm.csrf_token }}
-    <small class="my-0 py-0">{{ shopForm.name.label(class='my-0') }}</small>
-    {{ shopForm.name(required='required') }}
-    {% for error in shopForm.errors.name %}
-    <span style="color: red;">[{{error}}]</span>
-    {% endfor %}
-    <small class="my-0 py-0">{{ shopForm.note.label(class='my-0') }}</small>
-    {{ shopForm.note }}
+{% call make_modal('newList', 'Add new list', '/new-list', 'newListForm')%}
+{{ listForm.csrf_token }}
+<small class="my-0 py-0">{{ listForm.name.label(class='my-0') }}</small>
+{{ listForm.name(required='required') }}
+{% for error in listForm.errors.name %}
+<span style="color: red;">[{{error}}]</span>
+{% endfor %}
+<small class="my-0 py-0">{{ listForm.note.label(class='my-0') }}</small>
+{{ listForm.note }}
 {% endcall %}
 
+{% call make_modal('newCat', 'Add new category', '/new-cat', 'newCatForm')%}
+{{ catForm.csrf_token }}
+<small class="my-0 py-0">{{ catForm.name.label(class='my-0') }}</small>
+{{ catForm.name(required='required') }}
+{% for error in catForm.errors.name %}
+<span style="color: red;">[{{error}}]</span>
+{% endfor %}
+<small class="my-0 py-0">{{ catForm.note.label(class='my-0') }}</small>
+{{ catForm.note }}
+{% endcall %}
+
+{% call make_modal('newShop', 'Add new shop', '/new-shop', 'newShopForm')%}
+{{ shopForm.csrf_token }}
+<small class="my-0 py-0">{{ shopForm.name.label(class='my-0') }}</small>
+{{ shopForm.name(required='required') }}
+{% for error in shopForm.errors.name %}
+<span style="color: red;">[{{error}}]</span>
+{% endfor %}
+<small class="my-0 py-0">{{ shopForm.note.label(class='my-0') }}</small>
+{{ shopForm.note }}
+{% endcall %}
 
 <script type="text/javascript">
     var units = {{ units|safe }}
 
     $(document).ready(function(){
-        var listFormErrors = {% if listForm.errors.name %} true {% else %} false {% endif %}
-        if (listFormErrors){
-            $('#newList').modal('show');
+        $('.delList').on('click',function(){
+            console.log('click delList');
+            console.log($(this).attr("data-url"));
+            if(confirm('Do you want to delete list?')){
+                $.post($(this).attr("data-url"));
+                setTimeout(function() {
+                    window.location.reload();
+                },0);                
 
-        }
-                                                                                  /*        $('a[data-toggle="pill"]').on('shown.bs.tab',function(e){
-            var active_pane = '#'+$('div.tab-pane.active > ul').attr('id');
-            console.log(active_pane);
-            switch(active_pane){
-                case '#lists':
-                    $('ul'+active_pane).empty();
-                    $.each(units,function(i,v){
-                        $('<li class="list-group-item">' + v + '</li>').appendTo($('ul'+ active_pane));
-                    });
-                    break;
-                default:
-                    $('ul'+active_pane).empty();
-                    $('ul'+active_pane).append('<li class="list-group-item"> Default </li>');
             }
-
         });
-
-        $('a').trigger('shown.bs.tab');
-*/        
-                                                                                 });
+    });
 
 
 </script>
