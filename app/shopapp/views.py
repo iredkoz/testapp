@@ -35,9 +35,10 @@ def get_categories():
 
 @shopapp.route('/show_list/<slist>')
 def show_list(slist):
+    prodForm=ProductForm()
     items = Item.query.filter_by(slist = Slist.query.filter_by(name=slist).first()).all()
     cats = Category.query.all()
-    return render_template('shopapp/list.html',items=items, cats=cats)
+    return render_template('shopapp/list.html',items=items, cats=cats, itemForm=ItemForm(),prodForm=prodForm)
 
 @shopapp.route('/new-list', methods=['POST'])
 def newlist():
@@ -89,3 +90,17 @@ def newShop():
             db.session.commit()
     return redirect(url_for('shopapp.shop_main'))
 
+@shopapp.route('/new-item/<int:slist_id>', methods=['POST'])
+def newItem(slist_id):
+    itemForm = ItemForm()
+    if form.validate_on_submit():
+        product=Product.query.filter_by(name=form.product_id.data).first()
+        slist = Slist.query.get(slist_id)
+        shop=form.shop.data
+        qnty=form.quantity.data
+        price=form.price.data
+        notes=form.notes.data
+        item = Item(product=product, shop = shop_id, qnty=qnty, price = price, chk = False, notes=notes, slist=slist)
+        db.session.add(item)
+        db.session.commit()
+    return redirect(url_for('shopapp.show_list'))

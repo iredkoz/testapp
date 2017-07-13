@@ -27,15 +27,16 @@ class ProductForm(FlaskForm):
     note = TextAreaField('Product Note', render_kw={"placeholder":"Notes..","class":"form-control"})
     category = QuerySelectField('Category',query_factory=query_category, validators=[DataRequired('Please select product category!')], get_label='name',allow_blank=False, blank_text="All",render_kw={"class":"form-control"})
     size = IntegerField('Product Size', render_kw={"class":"form-control"})
-    unit = SelectField('Unit', choices=[(item,item) for item in units])
+    unit = SelectField('Unit', choices=[(item,item) for item in units],render_kw={"class":"form-control"})
     
 class ShopForm(FlaskForm):
     name = StringField('Shop Name',render_kw={"placeholder":"ex.Meijer..","class":"form-control"},validators=[DataRequired('Please enter shop name!')])
     note = TextAreaField('Shop Note', render_kw={"placeholder":"Notes..","class":"form-control"})
     
 class ItemForm(FlaskForm):
-    shop = QuerySelectField('iShops',query_factory=query_shop, get_label='name',allow_blank=False, blank_text="select Shop",render_kw={"class":"form-control"})
+    product_id = HiddenField('Product',render_kw={"class":"form-control"})
+    shop = QuerySelectField('Shop',query_factory=query_shop, get_label='name',allow_blank=False, blank_text="select Shop",render_kw={"class":"form-control"})
     quantity = IntegerField('Quantity',render_kw={"class":"form-control"})
     price = IntegerField('Price',render_kw={"class":"form-control"})
-    notes = TextAreaField('Item Note',render_kw={"class":"form-control"})
+    notes = TextAreaField('Note',render_kw={"class":"form-control"})
     

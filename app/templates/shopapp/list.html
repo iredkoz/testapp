@@ -8,53 +8,69 @@
 
 {% block content %}
 <div class="row">
-        <nav class="col-12 topbar bg-faded" role="navigation" id="shopMenu">
-            <ul class="nav nav-pills flex-row pl-2">
-                <li class="nav-item"><a class="btn btn-outline-primary" style="color:#0275d8" onclick="history.back(-1)" ><i class="fa fa-arrow-left" aria-hidden="true"></i></a></li>
-               
-            </ul>
-        </nav>
-    </div>
+    <nav class="col-12 topbar bg-faded" role="navigation" id="shopMenu">
+        <ul class="nav nav-pills flex-row pl-2">
+            <li class="nav-item"><a class="btn btn-outline-primary" style="color:#0275d8" onclick="history.back(-1)" ><i class="fa fa-arrow-left" aria-hidden="true"></i></a></li>
+
+        </ul>
+    </nav>
+</div>
 
 <div class="container-fluid">
-
     <ul id="lists" class="list-group">
         {% for item in items %}
         <div class="list-group-item">
             {{ item.name }}
         </div>
         {% endfor %}
-
     </ul>
-    <button class="btn btn-outline-primary my-2" style="border-radius:24px" data-toggle="modal" data-target="#newItem">+Add Item</button>
+    <div class="d-flex justify-content-between">
+        <button class="btn btn-outline-primary my-2" style="border-radius:20px" data-toggle="modal" data-target="#addItem">+Add Item</button>
+        <button class="btn btn-outline-primary my-2" style="border-radius:20px" data-toggle="modal" data-target="#newItem">+New Item</button>
+    </div>        
+    
 </div>
 
+{% from 'macros.html' import make_modal %}
+{% call make_modal('addItem', 'Select category', '', '')%}
+    <div class="d-flex flex-wrap">
+    {% for cat in cats %}
+            <button class="btn btn-outline-primary mx-1" data-toggle="modal" data-target="#ItemsInCategory" id="category" data-category="{{ cat.name }}" style="word-wrap: break-word;">{{ cat.name }}</button>
+    {% endfor %}
+    </div>
+{% endcall %}
 
-<div class="modal fade" id="newItem" tabindex="-1" role="dialog" aria-labelledby="newList" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content" method="post" action='/new-list'>
-            <div class="modal-header">
-                <h5 class="modal-title" id="newList">Select Category</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="container col-md-12">
-                    {% for category in categories %}
-                    {% if (loop.index is divisibleby 4) or (loop.index == 1) %}<div class="row my-2 mx-2">{% endif %}
-                    <div class="col-md-4 col-xs-4 col-lg-4">
-                        <button class="btn btn-outline-primary btn-block" data-toggle="modal" data-target="#ItemsInCategory" id="category" data-category="{{ cats.name }}">{{ cats.name }}</button>
-                    </div>
-                    {% if (loop.index is divisibleby 3) %}</div>{% endif %}
-                    {% endfor %}
-                </div>
-
-            </div>
-            <div class ="modal-footer">
-                <button type="button" class="close ml-auto" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">Back</span></button>
-
-            </div>
+{% call make_modal('newItem', 'Create new product', '/new-product', 'newProdForm')%}
+    {{ prodForm.csrf_token }}
+    <div class="d-flex flex-inline">
+        <div class="form-group col-6">
+        <small class="my-0 py-0">{{ prodForm.name.label(class='my-0') }}</small>
+        {{ prodForm.name(required='required') }}
+        {% for error in prodForm.errors.name %}
+            <span style="color: red;">[{{error}}]</span>
+        {% endfor %}
+        </div>            
+        <div class="form-group col-6">
+            <small class="my-0 py-0">{{ prodForm.category.label(class='my-0') }}</small>
+            {{ prodForm.category }}
+        </div>
+    </div>        
+    <div class="d-flex flex-inline">
+        <div class="form-group col-6">
+            <small class="my-0 py-0">{{ prodForm.size.label(class='my-0') }}</small>
+            {{ prodForm.size(type="number") }}
+        </div>
+        <div class="form-group col-4">
+            <small class="my-0 py-0">{{ prodForm.unit.label(class='my-0') }}</small>
+            {{ prodForm.unit }}
         </div>
     </div>
-</div>
+        <div class="form-group mx-3">
+            <small class="my-0 py-0">{{ prodForm.note.label(class='my-0') }}</small>
+            {{ prodForm.note }}
+        </div>
+
+{% endcall %}
+
+
 {% endblock %}
