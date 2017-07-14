@@ -36,7 +36,7 @@ class Item(db.Model):
     __tablename__='item'
     id = db.Column('id',db.Integer,primary_key=True)
     qnty = db.Column('qnty',db.Integer)
-    price = db.Column('price',db.Integer)
+    price = db.Column('price',db.Numeric(precision=2))
     chk = db.Column('chk',db.Boolean)
     note = db.Column('note',db.String(255))
     

@@ -5,17 +5,17 @@
 {% endblock %}
 {% block content %}
 <div class="container-fluid">
-    <div class="row">
-        <nav class="col-12 topbar bg-faded" role="navigation" id="shopMenu">
+    <div class="row mb-2">
+        <nav class="col-12 topbar" role="navigation" id="shopMenu">
             <ul class="nav nav-pills flex-row px-0">
-                <li class="nav-item"><a class="nav-link active" aria-expanded="true" data-toggle="pill" role="pill" href="#lists">Lists</a></li>
+                <li class="nav-item"><a class="nav-link" aria-expanded="true" data-toggle="pill" role="pill" href="#lists">Lists</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="pill" role="pill" href="#categories">Categories</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="pill" role="pill" href="#shops">Shops</a></li>
             </ul>
         </nav>
     </div>
     <div class="tab-content">
-        <div id="lists" class="tab-pane fade-in active">
+        <div id="lists" class="tab-pane fade-in">
             <ul id="lists" class="list-group">
                 {% for list in lists %}
                 <div class="list-group-item">
@@ -23,7 +23,7 @@
                         <a href="{{ url_for('shopapp.show_list',slist=list.name) }}" class="mb-1" style="font-size:120%">{{ list.name }}</a>
                         <small class="mx-4">{{ list.date.strftime('%d %b %y') }}</small>
                         <button class="btn btn-link ml-auto h-50" href="#"><i class="fa fa-edit fa-lg"></i></button>
-                        <button id="delList" data-url="{{ url_for('shopapp.delList', slist_id=list.id) }}" class="btn btn-link mx-2 h-50 delList"><i class="fa fa-trash fa-lg"></i></button>
+                        <button id="{{ list.name }}" data-url="{{ url_for('shopapp.delList', slist_id=list.id) }}" class="btn btn-link mx-2 h-50 delList"><i class="fa fa-trash fa-lg"></i></button>
                     </div>
                     <p class="mb-1" style="font-size:90%">{{ list.note }}</p>
                 </div>
@@ -37,9 +37,9 @@
                 {% for cat in cats %}
                 <div class="list-group-item py-1">
                     <div class="d-flex flex-row w-100 justify-content-end mt-1">
-                        <p class="mb-1" style="font-size:120%">{{ cat.name }}</p>
+                        <a class="mb-1" style="font-size:120%" href="{{ url_for('shopapp.show_cat',cat_id=cat.id) }}">{{ cat.name }}</a>
                         <a class="btn btn-link ml-auto h-50" href="#"><i class="fa fa-edit fa-lg"></i></a>
-                        <button class="btn btn-link mx-2 h-50"><i class="fa fa-trash fa-lg"></i></button>
+                        <button id="{{ cat.name }}" data-url="{{ url_for('shopapp.delCat', cat_id=cat.id) }}" class="btn btn-link mx-2 h-50 delCat"><i class="fa fa-trash fa-lg"></i></button>
                     </div>
                     <p class="mb-1" style="font-size:90%">{{ cat.note }}</p>
                 </div>
@@ -54,7 +54,7 @@
                     <div class="d-flex flex-row w-100 justify-content-end mt-1">
                         <p href="#" class="mb-1" style="font-size:120%">{{ shop.name }}</p>
                         <a class="btn btn-link ml-auto h-50" href="#"><i class="fa fa-edit fa-lg"></i></a>
-                        <button class="btn btn-link mx-2 h-50"><i class="fa fa-trash fa-lg"></i></button>
+                        <button id="{{ shop.name }}" data-url="{{ url_for('shopapp.delShop', shop_id=shop.id) }}" class="btn btn-link mx-2 h-50 delShop"><i class="fa fa-trash fa-lg"></i></button>
                     </div>
                     <p class="mb-1" style="font-size:90%">{{ shop.note }}</p>
                 </div>
@@ -103,12 +103,21 @@
 
 <script type="text/javascript">
     var units = {{ units|safe }}
+    var $SCRIPT_ROOT={{ request.script_root|tojson|safe }};
+    var lastTab = localStorage.getItem('lastTab');
+    console.log(lastTab);
+    if (lastTab) {
+        $('#shopMenu a[href="' + lastTab + '"]').tab('show');
+    }
+    else
+    {
+        $('#shopMenu a:first').tab('show');
+        localStorage.setItem('lastTab', $('#shopMenu a:first').attr('href'));
+    }
 
     $(document).ready(function(){
-        $('.delList').on('click',function(){
-            console.log('click delList');
-            console.log($(this).attr("data-url"));
-            if(confirm('Do you want to delete list?')){
+        $('.delList, .delShop, .delCat').on('click',function(){
+            if(confirm('Do you want to delete '+$(this).attr('id')+'?')){
                 $.post($(this).attr("data-url"));
                 setTimeout(function() {
                     window.location.reload();
@@ -116,6 +125,14 @@
 
             }
         });
+        $('a[data-toggle="pill"]').on('shown.bs.tab',function(e){
+            var list_id=$(".tab-pane.active").attr("id");
+            console.log(list_id)
+            localStorage.setItem('lastTab','#' + list_id);
+        });
+
+        
+
     });
 
 

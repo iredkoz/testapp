@@ -40,6 +40,12 @@ def show_list(slist):
     cats = Category.query.all()
     return render_template('shopapp/list.html',items=items, cats=cats, itemForm=ItemForm(),prodForm=prodForm)
 
+@shopapp.route('/show_cat/<int:cat_id>', methods=['GET'])
+def show_cat(cat_id):
+    prodForm=ProductForm()
+    prods = Product.query.filter_by(category = Category.query.get(cat_id)).all()
+    return render_template('shopapp/category.html',prods=prods,prodForm=prodForm)
+
 @shopapp.route('/new-list', methods=['POST'])
 def newlist():
     listForm = ListForm()
@@ -53,11 +59,35 @@ def newlist():
             db.session.commit()
     return redirect(url_for('shopapp.shop_main'))
 
+@shopapp.route('/delete-product/<int:prod_id>', methods=['POST'] )
+def delProduct(prod_id):
+    if request.method == 'POST':
+        prod = Product.query.get(prod_id)
+        db.session.delete(prod)
+        db.session.commit()
+    return ('',204)
+
 @shopapp.route('/delete-item/<int:item_id>', methods=['POST'] )
 def delItem(item_id):
     if request.method == 'POST':
         item = Item.query.get(item_id)
         db.session.delete(item)
+        db.session.commit()
+    return ('',204)
+
+@shopapp.route('/delete-cat/<int:cat_id>', methods=['POST'] )
+def delCat(cat_id):
+    if request.method == 'POST':
+        cat = Category.query.get(cat_id)
+        db.session.delete(cat)
+        db.session.commit()
+    return ('',204)
+
+@shopapp.route('/delete-shop/<int:shop_id>', methods=['POST'] )
+def delShop(shop_id):
+    if request.method == 'POST':
+        shop = Shop.query.get(shop_id)
+        db.session.delete(shop)
         db.session.commit()
     return ('',204)
 

@@ -59,6 +59,10 @@ body {
 .navbar .navbar-toggle .navbar-toggler-icon {
   color: #ecf0f1;
 }
+.navbar .navbar-toggler {
+    border-color: #ecf0f1;
+    color: #ecf0f1;
+}
 .navbar .navbar-collapse,
 .navbar .navbar-form {
   border-color: #ecf0f1;
