@@ -53,6 +53,16 @@ class Shop(db.Model):
     id = db.Column('id',db.Integer,primary_key=True)
     name = db.Column('name',db.String(80))
     note = db.Column('note',db.String(255))
+    
+class Finances(db.Model):
+    __tablename__='finances'
+    id = db.Column('id',db.Integer, primary_key=True)
+    date = db.Column('date',db.Date,default = datetime.utcnow())
+    shop = db.relationship('Shop',foreign_keys=shop_id, backref='finances')
+    check_num = db.Column('check_num',db.Integer)
+    price = db.Column('price',db.Numeric(precision=2))
+    
+    shop_id=db.Column('shop_id',db.Integer,db.ForeignKey('shop.id'))
 
 class ProductSchema(Schema):
     class Meta:

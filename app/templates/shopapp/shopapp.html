@@ -18,9 +18,9 @@
         <div id="lists" class="tab-pane fade-in">
             <ul id="lists" class="list-group">
                 {% for list in lists %}
-                <div class="list-group-item">
-                    <div class="d-flex flex-row w-100 justify-content-end">
-                        <a href="{{ url_for('shopapp.show_list',slist=list.name) }}" class="mb-1" style="font-size:120%">{{ list.name }}</a>
+                <div class="list-group-item py-0 border-left-0 border-right-0 rounded-0">
+                    <div class="d-flex flex-row w-100 align-items-center justify-content-end">
+                        <a href="{{ url_for('shopapp.show_list',slist=list.name) }}" class="" style="font-size:120%">{{ list.name }}</a><span class="badge badge-info badge-pill mx-2" id="{{ list.name }}"></span>
                         <small class="mx-4">{{ list.date.strftime('%d %b %y') }}</small>
                         <button class="btn btn-link ml-auto h-50" href="#"><i class="fa fa-edit fa-lg"></i></button>
                         <button id="{{ list.name }}" data-url="{{ url_for('shopapp.delList', slist_id=list.id) }}" class="btn btn-link mx-2 h-50 delList"><i class="fa fa-trash fa-lg"></i></button>
@@ -35,7 +35,7 @@
         <div id="categories" class="tab-pane fade-in">
             <ul id="categories" class="list-group">
                 {% for cat in cats %}
-                <div class="list-group-item py-1">
+                <div class="list-group-item py-0 border-left-0 border-right-0 rounded-0">
                     <div class="d-flex flex-row w-100 justify-content-end mt-1">
                         <a class="mb-1" style="font-size:120%" href="{{ url_for('shopapp.show_cat',cat_id=cat.id) }}">{{ cat.name }}</a>
                         <a class="btn btn-link ml-auto h-50" href="#"><i class="fa fa-edit fa-lg"></i></a>
@@ -50,7 +50,7 @@
         <div id="shops" class="tab-pane fade-in">
             <ul id="shops" class="list-group">
                 {% for shop in shops %}
-                <div class="list-group-item py-1">
+                <div class="list-group-item py-0 border-left-0 border-right-0 rounded-0">
                     <div class="d-flex flex-row w-100 justify-content-end mt-1">
                         <p href="#" class="mb-1" style="font-size:120%">{{ shop.name }}</p>
                         <a class="btn btn-link ml-auto h-50" href="#"><i class="fa fa-edit fa-lg"></i></a>
@@ -69,36 +69,36 @@
 {% from 'macros.html' import make_modal %}
 
 {% call make_modal('newList', 'Add new list', '/new-list', 'newListForm')%}
-    {{ listForm.csrf_token }}
-    <small class="my-0 py-0">{{ listForm.name.label(class='my-0') }}</small>
-    {{ listForm.name(required='required') }}
-    {% for error in listForm.errors.name %}
-    <span style="color: red;">[{{error}}]</span>
-    {% endfor %}
-    <small class="my-0 py-0">{{ listForm.note.label(class='my-0') }}</small>
-    {{ listForm.note }}
+{{ listForm.csrf_token }}
+<small class="my-0 py-0">{{ listForm.name.label(class='my-0') }}</small>
+{{ listForm.name(required='required') }}
+{% for error in listForm.errors.name %}
+<span style="color: red;">[{{error}}]</span>
+{% endfor %}
+<small class="my-0 py-0">{{ listForm.note.label(class='my-0') }}</small>
+{{ listForm.note }}
 {% endcall %}
 
 {% call make_modal('newCat', 'Add new category', '/new-cat', 'newCatForm')%}
-    {{ catForm.csrf_token }}
-    <small class="my-0 py-0">{{ catForm.name.label(class='my-0') }}</small>
-    {{ catForm.name(required='required') }}
-    {% for error in catForm.errors.name %}
-    <span style="color: red;">[{{error}}]</span>
-    {% endfor %}
-    <small class="my-0 py-0">{{ catForm.note.label(class='my-0') }}</small>
-    {{ catForm.note }}
+{{ catForm.csrf_token }}
+<small class="my-0 py-0">{{ catForm.name.label(class='my-0') }}</small>
+{{ catForm.name(required='required') }}
+{% for error in catForm.errors.name %}
+<span style="color: red;">[{{error}}]</span>
+{% endfor %}
+<small class="my-0 py-0">{{ catForm.note.label(class='my-0') }}</small>
+{{ catForm.note }}
 {% endcall %}
 
 {% call make_modal('newShop', 'Add new shop', '/new-shop', 'newShopForm')%}
-    {{ shopForm.csrf_token }}
-    <small class="my-0 py-0">{{ shopForm.name.label(class='my-0') }}</small>
-    {{ shopForm.name(required='required') }}
-    {% for error in shopForm.errors.name %}
-    <span style="color: red;">[{{error}}]</span>
-    {% endfor %}
-    <small class="my-0 py-0">{{ shopForm.note.label(class='my-0') }}</small>
-    {{ shopForm.note }}
+{{ shopForm.csrf_token }}
+<small class="my-0 py-0">{{ shopForm.name.label(class='my-0') }}</small>
+{{ shopForm.name(required='required') }}
+{% for error in shopForm.errors.name %}
+<span style="color: red;">[{{error}}]</span>
+{% endfor %}
+<small class="my-0 py-0">{{ shopForm.note.label(class='my-0') }}</small>
+{{ shopForm.note }}
 {% endcall %}
 
 <script type="text/javascript">
@@ -131,7 +131,19 @@
             localStorage.setItem('lastTab','#' + list_id);
         });
 
-        
+        $('.badge').each(function(){
+            var slist = $(this).attr('id');
+            
+            $.getJSON($SCRIPT_ROOT+'/_get_items',{
+                slist: slist,
+            },
+                      function(data){
+                data=data.data;
+            });
+
+            $(this).text(data);
+        });
+
 
     });
 

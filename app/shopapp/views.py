@@ -168,10 +168,14 @@ def check_item(item_id):
     return redirect(url_for('shopapp.show_list',slist=slist.name))
 
 @shopapp.route('/_get_products',methods=['GET'])
-def parse_data():
+def get_products():
     cat=request.args.get('cat')
     prod_schema=ProductSchema(many=True)
     products=Product.query.filter_by(category=Category.query.filter_by(name=cat).first()).all()
         
     result=prod_schema.dump(products)
     return jsonify(data=result.data)
+
+@shopapp.route('/_get_items',methods=['GET'])
+def get_items():
+    slist=request.args.get('slist')
