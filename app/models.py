@@ -1,6 +1,5 @@
-from app import db
+from app import db,ma
 from datetime import datetime
-from flask_marshmallow import Marshmallow
 from marshmallow import Schema
 
 # shopping lists table

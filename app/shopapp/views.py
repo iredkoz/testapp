@@ -4,7 +4,7 @@ import json
 import datetime
 from forms import ListForm, ItemForm, CategoryForm, ProductForm, ShopForm, units
 from .. import db
-from ..models import Slist, Category, Product, Item, Shop
+from ..models import Slist, Category, Product, Item, Shop, ProductSchema
 
 def flash_errors(form):
     for field, errors in form.errors.items():
@@ -33,7 +33,7 @@ def get_categories():
     result=prod_schema.dump(products)
     return jsonify(data=result.data)
 
-@shopapp.route('/show_list/<slist>')
+@shopapp.route('/show_list/<slist>', methods=['GET'])
 def show_list(slist):
     prodForm=ProductForm()
     items = Item.query.filter_by(slist = Slist.query.filter_by(name=slist).first()).all()
@@ -52,6 +52,14 @@ def newlist():
             db.session.add(slist)
             db.session.commit()
     return redirect(url_for('shopapp.shop_main'))
+
+@shopapp.route('/delete-item/<int:item_id>', methods=['POST'] )
+def delItem(item_id):
+    if request.method == 'POST':
+        item = Item.query.get(item_id)
+        db.session.delete(item)
+        db.session.commit()
+    return ('',204)
 
 @shopapp.route('/delete-list/<int:slist_id>', methods=['POST'] )
 def delList(slist_id):
@@ -90,17 +98,48 @@ def newShop():
             db.session.commit()
     return redirect(url_for('shopapp.shop_main'))
 
-@shopapp.route('/new-item/<int:slist_id>', methods=['POST'])
-def newItem(slist_id):
+@shopapp.route('/new-product', methods=['POST'])
+def newProduct():
+    prodForm = ProductForm()
+    name = prodForm.name.data
+    if prodForm.validate_on_submit():
+        if Product.query.filter_by(name=name).first():
+            flash('Product with this name already exists!', 'alert-danger')
+        else:
+            prod = Product(name=name, category = prodForm.category.data, note=prodForm.note.data, size = prodForm.size.data, unit=prodForm.unit.data)
+            db.session.add(prod)
+            db.session.commit()
+    return redirect(url_for('shopapp.shop_main')) 
+
+@shopapp.route('/new-item', methods=['POST'])
+def newItem():
     itemForm = ItemForm()
-    if form.validate_on_submit():
-        product=Product.query.filter_by(name=form.product_id.data).first()
-        slist = Slist.query.get(slist_id)
-        shop=form.shop.data
-        qnty=form.quantity.data
-        price=form.price.data
-        notes=form.notes.data
-        item = Item(product=product, shop = shop_id, qnty=qnty, price = price, chk = False, notes=notes, slist=slist)
+    if itemForm.validate_on_submit():
+        product=Product.query.filter_by(name=itemForm.product_id.data).first()
+        slist = Slist.query.filter_by(name=itemForm.slist_id.data).first()
+        shop=itemForm.shop.data
+        qnty=itemForm.quantity.data
+        price=itemForm.price.data
+        notes=itemForm.notes.data
+        item = Item(product=product, shop = shop, qnty=qnty, price = price, chk = False, note=notes, slist=slist)
         db.session.add(item)
         db.session.commit()
-    return redirect(url_for('shopapp.show_list'))
+    return redirect(url_for('shopapp.show_list',slist=slist.name))
+
+@shopapp.route('/check-item/<int:item_id>', methods=['POST'])
+def check_item(item_id):
+    item=Item.query.get(item_id)
+    slist = Slist.query.get(item.slist_id)
+    if request.method == 'POST':
+        item.chk= not item.chk
+        db.session.commit()
+    return redirect(url_for('shopapp.show_list',slist=slist.name))
+
+@shopapp.route('/_get_products',methods=['GET'])
+def parse_data():
+    cat=request.args.get('cat')
+    prod_schema=ProductSchema(many=True)
+    products=Product.query.filter_by(category=Category.query.filter_by(name=cat).first()).all()
+        
+    result=prod_schema.dump(products)
+    return jsonify(data=result.data)
