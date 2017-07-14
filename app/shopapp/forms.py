@@ -38,6 +38,6 @@ class ItemForm(FlaskForm):
     slist_id = HiddenField('Slist',render_kw={"class":"form-control"})
     shop = QuerySelectField('Shop',query_factory=query_shop, get_label='name',allow_blank=False, blank_text="select Shop",render_kw={"class":"form-control"})
     quantity = IntegerField('Quantity',render_kw={"class":"form-control"})
-    price = IntegerField('Price',render_kw={"class":"form-control"})
+    price = DecimalField('Price',render_kw={"class":"form-control"})
     notes = TextAreaField('Note',render_kw={"class":"form-control"})
     

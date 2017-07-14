@@ -124,7 +124,9 @@ def newItem():
         item = Item(product=product, shop = shop, qnty=qnty, price = price, chk = False, note=notes, slist=slist)
         db.session.add(item)
         db.session.commit()
-    return redirect(url_for('shopapp.show_list',slist=slist.name))
+        return redirect(url_for('shopapp.show_list',slist=slist.name))
+    else:
+        return redirect(url_for('shopapp.shop_main'))
 
 @shopapp.route('/check-item/<int:item_id>', methods=['POST'])
 def check_item(item_id):
