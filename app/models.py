@@ -15,7 +15,7 @@ class Category(db.Model):
     __tablename__='category'
     id = db.Column('id',db.Integer,primary_key=True)
     name = db.Column('name',db.String(80))
-    note = db.Column('note',db.String(120))    
+    note = db.Column('notflase',db.String(120))    
     icon = db.Column('icon',db.String(120))# icon name in Font Awesome
 
 # products table    
@@ -58,11 +58,12 @@ class Finances(db.Model):
     __tablename__='finances'
     id = db.Column('id',db.Integer, primary_key=True)
     date = db.Column('date',db.Date,default = datetime.utcnow())
-    shop = db.relationship('Shop',foreign_keys=shop_id, backref='finances')
     check_num = db.Column('check_num',db.Integer)
     price = db.Column('price',db.Numeric(precision=2))
     
     shop_id=db.Column('shop_id',db.Integer,db.ForeignKey('shop.id'))
+
+    shop = db.relationship('Shop',foreign_keys=shop_id, backref='finances')
 
 class ProductSchema(Schema):
     class Meta:

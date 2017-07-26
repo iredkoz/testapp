@@ -12,24 +12,30 @@
         <ul class="nav nav-pills">
             <li class="nav-item"><a class="btn btn-outline-primary" style="color:#0275d8" href="{{ url_for('shopapp.shop_main') }}" ><i class="fa fa-arrow-left" aria-hidden="true"></i></a></li>
 
-                <h5 class="align-self-center my-0 mx-5" style="font-size:150%">{{ prods[0].category.name }}</h5>
+            <h5 class="align-self-center my-0 mx-5" style="font-size:150%">{{ cat.name }}</h5>
         </ul>
     </nav>
 </div>
 
 <div class="container-fluid">
     <ul id="lists" class="list-group">
-        {% for prod in prods %}
-        <li class="list-group-item p-0 border-left-0 border-right-0">
-            <div class="d-flex w-100 justify-content-end">
-                <div class="col">{{ prod.name }}</div>
-                <div class="d-flex flex-row">
-                    <button class="btn btn-link ml-auto h-50" href="#"><i class="fa fa-edit fa-lg"></i></button>
-                    <button id="delProduct" data-url="{{ url_for('shopapp.delProduct', prod_id = prod.id) }}" class="btn btn-link mx-2 h-50 delProduct"><i class="fa fa-trash fa-lg"></i></button>
+        {% if prods[0] is defined %}
+            {% for prod in prods %}
+            <li class="list-group-item p-0 border-left-0 border-right-0">
+                <div class="d-flex w-100 justify-content-end">
+                    <div class="col">{{ prod.name }}</div>
+                    <div class="d-flex flex-row">
+                        <button class="btn btn-link ml-auto h-50" href="#"><i class="fa fa-edit fa-lg"></i></button>
+                        <button id="delProduct" data-url="{{ url_for('shopapp.delProduct', prod_id = prod.id) }}" class="btn btn-link mx-2 h-50 delProduct"><i class="fa fa-trash fa-lg"></i></button>
+                    </div>
                 </div>
+            </li>
+            {% endfor %}
+        {% else %}
+            <div class="d-flex flex-row justify-content-center">
+                <h6>Oops! No products in this category yet...</h6>
             </div>
-        </li>
-        {% endfor %}
+        {% endif %}
     </ul>
     <div class="d-flex justify-content-between">
         <button class="btn btn-outline-primary my-2" style="border-radius:20px" data-toggle="modal" data-target="#newItem">+New Item</button>
