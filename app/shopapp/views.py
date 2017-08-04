@@ -45,6 +45,8 @@ def show_cat(cat_id):
     prodForm=ProductForm()
     prods = Product.query.filter_by(category = Category.query.get(cat_id)).all()
     cat = Category.query.get(cat_id)
+    prodForm.category.default=cat.name
+    prodForm.process()
     return render_template('shopapp/category.html',prods=prods,prodForm=prodForm,cat=cat)
 
 @shopapp.route('/new-list', methods=['POST'])
