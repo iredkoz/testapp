@@ -9,15 +9,32 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center flex-row">
     <a class="nav-link" href="#">Prev</a>
-    <h5>Current Year</h5>   
+    <h5>Year {{today.year}}</h5>   
     <a class="nav-link" href="#">Next</a>
 </div>
-<div class="container-flex">
-    <div class="row">
-        <div class="col">
-            <button>Jan</button>
+
+
+<div class="container-flex p-2 m-2">
+        <div class="row">
+            <a class="col-4" href="#">January</a>
+            <a class="col-4"href="#">February</a>
+            <a class="col-4"href="#">March</a>
         </div>
-    </div>
+        <div class="row">
+            <a class="col-4"href="#">April</a>
+            <a class="col-4"href="#">May</a>
+            <a class="col-4"href="#">June</a>
+        </div>
+        <div class="row">
+            <a class="col-4"href="#">July</a>
+            <a class="col-4"href="#">August</a>
+            <a class="col-4"href="#">September</a>
+        </div>
+        <div class="row">
+            <a class="col-4"href="#">October</a>
+            <a class="col-4"href="#">November</a>
+            <a class="col-4"href="#">December</a>
+        </div>
 </div>
 
 <script>

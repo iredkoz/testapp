@@ -4,7 +4,11 @@ from datetime import date
 
 from . import finance
 
+months=["January","January","January","January","January","January",
+        "January","January","January","January","January","January"]
+
 @finance.route('/finances')
 def finance_main():
     cal = Calendar(0)
-    return render_template('financeapp/financeapp.html')
+    today=date.today()
+    return render_template('financeapp/financeapp.html',cal=cal,today=today)

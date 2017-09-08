@@ -1,10 +1,10 @@
 from flask import render_template, request, redirect, flash,url_for, jsonify
 from . import shopapp
-import json
+import simplejson as json
 import datetime
 from forms import ListForm, ItemForm, CategoryForm, ProductForm, ShopForm, units
 from .. import db
-from ..models import Slist, Category, Product, Item, Shop, ProductSchema
+from ..models import Slist, Category, Product, Item, Shop, ProductSchema, ItemSchema
 
 def flash_errors(form):
     for field, errors in form.errors.items():
@@ -27,11 +27,6 @@ def shop_main():
                            itemForm=itemForm,catForm=catForm, prodForm=prodForm, 
                            shopForm=shopForm, cats=cats,shops=shops)
 
-@shopapp.route('/_get_categories',methods=['GET'])
-def get_categories():
-    products=Category.query.all()
-    result=prod_schema.dump(products)
-    return jsonify(data=result.data)
 
 @shopapp.route('/show_list/<slist>', methods=['GET'])
 def show_list(slist):
@@ -161,6 +156,22 @@ def newItem():
     else:
         return redirect(url_for('shopapp.shop_main'))
 
+@shopapp.route('/edit-item/<int:item_id>', methods=['POST','GET'])
+def editItem(item_id):
+    itemForm = ItemForm()
+    item = Item.query.get(item_id)
+    slist = Slist.query.get(item.slist_id)
+    if itemForm.validate_on_submit():
+        item.shop = itemForm.shop.data
+        item.qnty=itemForm.quantity.data
+        item.price=itemForm.price.data
+        item.notes=itemForm.notes.data
+        db.session.commit()
+        return redirect(url_for('shopapp.show_list',slist=slist.name))
+    else:
+        return redirect(url_for('shopapp.shop_main'))
+
+    
 @shopapp.route('/check-item/<int:item_id>', methods=['POST'])
 def check_item(item_id):
     item=Item.query.get(item_id)
@@ -169,6 +180,12 @@ def check_item(item_id):
         item.chk= not item.chk
         db.session.commit()
     return redirect(url_for('shopapp.show_list',slist=slist.name))
+
+@shopapp.route('/_get_categories',methods=['GET'])
+def get_categories():
+    products=Category.query.all()
+    result=prod_schema.dump(products)
+    return jsonify(data=result.data)
 
 @shopapp.route('/_get_products',methods=['GET'])
 def get_products():
@@ -179,6 +196,10 @@ def get_products():
     result=prod_schema.dump(products)
     return jsonify(data=result.data)
 
-@shopapp.route('/_get_items',methods=['GET'])
-def get_items():
-    slist=request.args.get('slist')
+@shopapp.route('/_get_item',methods=['GET'])
+def get_item():
+    item_id=request.args.get('item_id')
+    item=Item.query.get(item_id)
+    item_schema=ItemSchema()
+    result=item_schema.dump(item)
+    return jsonify(data=result.data)

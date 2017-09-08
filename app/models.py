@@ -1,6 +1,6 @@
 from app import db,ma
 from datetime import datetime
-from marshmallow import Schema
+from marshmallow import Schema, fields, ValidationError, pre_load
 
 # shopping lists table
 class Slist(db.Model):
@@ -48,6 +48,7 @@ class Item(db.Model):
     shop = db.relationship('Shop',foreign_keys=shop_id, backref='items')
     slist = db.relationship('Slist', foreign_keys=slist_id, backref='items')
     
+
 class Shop(db.Model):
     __tablename__='shop'
     id = db.Column('id',db.Integer,primary_key=True)
@@ -72,3 +73,23 @@ class ProductSchema(Schema):
 class CategorySchema(Schema):
     class Meta:
         fields=('id','name','note')
+        
+class ShopSchema(Schema):
+    id = fields.Int(dump_only=True)
+    name = fields.Str()
+    note = fields.Str()
+    class Meta:
+        fields = ('id','name','note')
+        
+def must_not_be_blank(data):
+    if not data:
+        raise ValidationError('Data not provided.')
+        
+class ItemSchema(Schema):
+    id = fields.Int(dump_only=True)
+    shop = fields.Nested('ShopSchema',only = ('name'))
+    qnty = fields.Int()
+    price = fields.Decimal()
+    note = fields.Str()
+        
+        
