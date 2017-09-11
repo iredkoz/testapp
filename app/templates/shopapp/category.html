@@ -20,31 +20,32 @@
 <div class="container-fluid">
     <ul id="lists" class="list-group">
         {% if prods[0] is defined %}
-            {% for prod in prods %}
-            <li class="list-group-item p-0 border-left-0 border-right-0">
-                <div class="d-flex w-100 justify-content-end">
-                    <div class="col">{{ prod.name }}</div>
-                    <div class="d-flex flex-row">
-                        <button class="btn btn-link ml-auto h-50" href="#"><i class="fa fa-edit fa-lg"></i></button>
-                        <button id="delProduct" data-url="{{ url_for('shopapp.delProduct', prod_id = prod.id) }}" class="btn btn-link mx-2 h-50 delProduct"><i class="fa fa-trash fa-lg"></i></button>
-                    </div>
+        {% for prod in prods %}
+        <li class="list-group-item p-0 border-left-0 border-right-0">
+            <div class="d-flex w-100 justify-content-end">
+                <div class="col">{{ prod.name }}</div>
+                <div class="d-flex flex-row">
+                    <button class="btn btn-link ml-auto h-50" data-toggle="modal" data-target="#newProduct" data-prod-id="{{ prod.id }}" data-action="edit"><i class="fa fa-edit fa-lg"></i></button>
+                    <button id="delProduct" data-url="{{ url_for('shopapp.delProduct', prod_id = prod.id) }}" class="btn btn-link mx-2 h-50 delProduct"><i class="fa fa-trash fa-lg"></i></button>
                 </div>
-            </li>
-            {% endfor %}
-        {% else %}
-            <div class="d-flex flex-row justify-content-center">
-                <h6>Oops! No products in this category yet...</h6>
             </div>
+        </li>
+        {% endfor %}
+        {% else %}
+        <div class="d-flex flex-row justify-content-center">
+            <h6>Oops! No products in this category yet...</h6>
+        </div>
         {% endif %}
     </ul>
     <div class="d-flex justify-content-between">
-        <button class="btn btn-outline-primary my-2" style="border-radius:20px" data-toggle="modal" data-target="#newItem">+New Item</button>
+        <button class="btn btn-outline-primary my-2" style="border-radius:20px" data-toggle="modal" data-target="#newProduct" data-action="new">+New Item</button>
     </div>        
 
 </div>
 
 {% from 'macros.html' import make_modal %}
-{% call make_modal('newItem', 'Create new product', '/new-product', 'newProdForm')%}
+
+{% call make_modal('newProduct', 'Create new product', '/new-product', 'newProdForm')%}
 {{ prodForm.csrf_token }}
 <div class="d-flex flex-inline">
     <div class="form-group col-6">
@@ -76,8 +77,6 @@
 
 {% endcall %}
 
-
-
 <script>
     var $SCRIPT_ROOT={{ request.script_root|tojson|safe }};
     $(document).ready(function(){
@@ -86,7 +85,7 @@
             'show.bs.modal':function(){
                 var idx = $('.modal:visible').length;
                 $(this).css('z-index', 1040 + (5*idx));
-                
+
             },
 
             'shown.bs.modal':function(){
@@ -106,7 +105,7 @@
             }
 
         });
-        
+
         $('.delProduct').on('click',function(){
             if(confirm('Do you want to delete item?')){
                 $.post($(this).attr("data-url"));
@@ -116,6 +115,31 @@
 
             }
         });
+
+        $('#newProduct').on('show.bs.modal', function(e){
+            var button=$(e.relatedTarget);
+            var action=button.data('action')
+            if(action=="edit"){
+                var prod_id=button.data('prod-id')
+
+                $.getJSON($SCRIPT_ROOT+'/_get_product',{
+                    prod_id: prod_id,
+                },
+                          function(data){
+                    prod=data.data;
+                    $("#newProdForm").attr("action","/edit-product/"+prod_id);
+                    $("#newProdForm select[id=category]").find('option:contains("'+prod.category+'")').attr("selected",true);
+                    $("#newProdForm input[id=name]").val(prod.name);
+                    $("#newProdForm textarea[id=note]").val(prod.note);
+                    $("#newProdForm input[id=size]").val(prod.size);
+                    $("#newProdForm input[id=unit]").val(prod.unit);
+                });
+            }
+        });        
+        
+         $('.modal').on('hidden.bs.modal',function(){
+            $(this).find('form')[0].reset();
+         });
     });
 </script>
 {% endblock %}

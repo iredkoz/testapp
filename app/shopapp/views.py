@@ -4,7 +4,7 @@ import simplejson as json
 import datetime
 from forms import ListForm, ItemForm, CategoryForm, ProductForm, ShopForm, units
 from .. import db
-from ..models import Slist, Category, Product, Item, Shop, ProductSchema, ItemSchema
+from ..models import Slist, Category, Product, Item, Shop, ProductSchema, ItemSchema, ListSchema, CategorySchema, ShopSchema
 
 def flash_errors(form):
     for field, errors in form.errors.items():
@@ -170,8 +170,50 @@ def editItem(item_id):
         return redirect(url_for('shopapp.show_list',slist=slist.name))
     else:
         return redirect(url_for('shopapp.shop_main'))
-
     
+@shopapp.route('/edit-list/<int:list_id>', methods=['POST','GET'])
+def editList(list_id):
+    listForm = ListForm()
+    slist = Slist.query.get(list_id)
+    if listForm.validate_on_submit():
+        slist.name = listForm.name.data
+        slist.note=listForm.note.data
+        db.session.commit()
+    return redirect(url_for('shopapp.shop_main'))
+
+@shopapp.route('/edit-category/<int:cat_id>', methods=['POST','GET'])
+def editCategory(cat_id):
+    catForm = CategoryForm()
+    cat = Category.query.get(cat_id)
+    if catForm.validate_on_submit():
+        cat.name = catForm.name.data
+        cat.note=catForm.note.data
+        db.session.commit()
+    return redirect(url_for('shopapp.shop_main'))
+
+@shopapp.route('/edit-shop/<int:shop_id>', methods=['POST','GET'])
+def editShop(shop_id):
+    shopForm = ShopForm()
+    shop = Shop.query.get(shop_id)
+    if shopForm.validate_on_submit():
+        shop.name = shopForm.name.data
+        shop.note=shopForm.note.data
+        db.session.commit()
+    return redirect(url_for('shopapp.shop_main'))
+
+@shopapp.route('/edit-product/<int:prod_id>', methods=['POST','GET'])
+def editProduct(prod_id):
+    prodForm = ProductForm()
+    prod = Product.query.get(prod_id)
+    if prodForm.validate_on_submit():
+        prod.name=prodForm.name
+        prod.category = prodForm.category.data
+        prod.note=prodForm.note.data
+        prod.size = prodForm.size.data
+        prod.unit=prodForm.unit.data
+        db.session.commit()
+    return redirect(url_for('shopapp.shop_main'))
+
 @shopapp.route('/check-item/<int:item_id>', methods=['POST'])
 def check_item(item_id):
     item=Item.query.get(item_id)
@@ -187,13 +229,28 @@ def get_categories():
     result=prod_schema.dump(products)
     return jsonify(data=result.data)
 
+@shopapp.route('/_get_category', methods=['GET'])
+def get_category():
+    cat_id=request.args.get('cat_id')
+    cat=Category.query.get(cat_id)
+    cat_schema=CategorySchema()
+    result=cat_schema.dump(cat)
+    return jsonify(data=result.data)
+
 @shopapp.route('/_get_products',methods=['GET'])
 def get_products():
     cat=request.args.get('cat')
     prod_schema=ProductSchema(many=True)
     products=Product.query.filter_by(category=Category.query.filter_by(name=cat).first()).all()
-        
     result=prod_schema.dump(products)
+    return jsonify(data=result.data)
+
+@shopapp.route('/_get_product', methods=['GET'])
+def get_product():
+    prod_id=request.args.get('prod_id')
+    prod=Product.query.get(prod_id)
+    prod_schema=ProductSchema()
+    result=prod_schema.dump(prod)
     return jsonify(data=result.data)
 
 @shopapp.route('/_get_item',methods=['GET'])
@@ -202,4 +259,20 @@ def get_item():
     item=Item.query.get(item_id)
     item_schema=ItemSchema()
     result=item_schema.dump(item)
+    return jsonify(data=result.data)
+
+@shopapp.route('/_get_list',methods=['GET'])
+def get_list():
+    list_id=request.args.get('list_id')
+    slist=Slist.query.get(list_id)
+    list_schema=ListSchema()
+    result=list_schema.dump(slist)
+    return jsonify(data=result.data)
+
+@shopapp.route('/_get_shop',methods=['GET'])
+def get_shop():
+    shop_id=request.args.get('shop_id')
+    shop=Shop.query.get(shop_id)
+    shop_schema=ShopSchema()
+    result=shop_schema.dump(shop)
     return jsonify(data=result.data)

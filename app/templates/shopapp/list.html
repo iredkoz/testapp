@@ -46,6 +46,7 @@
 
 {% from 'macros.html' import make_modal %}
 
+
 {% call make_modal('editItem', 'Edit Item','','') %}
 
 <form class="form-group" method="post" action="" id="editItemForm">
@@ -225,8 +226,6 @@
             var item_id=button.data('item-id')
             var url=$(location).attr('href')
             var list_name = url.substring(url.lastIndexOf('/') + 1);
-            console.log(item_id);
-            console.log(list_name);
             
             $.getJSON($SCRIPT_ROOT+'/_get_item',{
                 item_id: item_id,
@@ -238,10 +237,12 @@
                 $("#editItemForm input[id=notes]").val(item.note);
                 $("#editItemForm input[id=price]").val(item.price);
                 $("#editItemForm input[id=quantity]").val(item.qnty);
+                $("#editItem h5").text(item.product);
 
             });
             
         });
+        
         
         $('#price_qnty').on('show.bs.modal',function(e){
 
@@ -250,19 +251,12 @@
             var url=$(location).attr('href')
             var list_name = url.substring(url.lastIndexOf('/') + 1);
 
-            console.log(product_name);
-            console.log(list_name);
-
-            //$('#{{itemForm.product_id.id}}').val(product_name);
-            //$('#{{itemForm.slist_id.id}}').val(list_name);
             $('#newItemForm input[id=product_id]').val(product_name);
             $('#newItemForm input[id=slist_id]').val(list_name);
             
         });
 
         $('.delItem').on('click',function(){
-            console.log('click delIem');
-            console.log($(this).attr("data-url"));
             if(confirm('Do you want to delete item?')){
                 $.post($(this).attr("data-url"));
                 setTimeout(function() {
@@ -271,6 +265,10 @@
 
             }
         });
+        
+         $('#price_qnty').on('hidden.bs.modal',function(){
+            $(this).find('form')[0].reset();
+         });        
     });
 </script>
 {% endblock %}

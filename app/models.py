@@ -66,30 +66,36 @@ class Finances(db.Model):
 
     shop = db.relationship('Shop',foreign_keys=shop_id, backref='finances')
 
-class ProductSchema(Schema):
-    class Meta:
-        fields=('id','name','note','size','unit')
-
 class CategorySchema(Schema):
     class Meta:
         fields=('id','name','note')
-        
+
+class ProductSchema(Schema):
+    id = fields.Int(dump_only=True)
+    category = fields.Nested('CategorySchema', only = ('name'))
+    name = fields.Str()
+    note = fields.Str()
+    size = fields.Decimal()
+    unit = fields.Str()
+#    class Meta:
+#        fields=('id','name','note','size','unit','category')
+
 class ShopSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str()
     note = fields.Str()
-    class Meta:
-        fields = ('id','name','note')
-        
-def must_not_be_blank(data):
-    if not data:
-        raise ValidationError('Data not provided.')
+#    class Meta:
+#        fields = ('id','name','note')
         
 class ItemSchema(Schema):
     id = fields.Int(dump_only=True)
+    product = fields.Nested('ProductSchema', only = ('name'))
     shop = fields.Nested('ShopSchema',only = ('name'))
     qnty = fields.Int()
     price = fields.Decimal()
     note = fields.Str()
         
-        
+class ListSchema(Schema):
+    id = fields.Int(dump_only=True)
+    name = fields.Str()
+    note = fields.Str()
