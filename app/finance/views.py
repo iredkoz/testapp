@@ -4,8 +4,8 @@ from datetime import date
 
 from . import finance
 
-months=["January","January","January","January","January","January",
-        "January","January","January","January","January","January"]
+months=["January","February","March","April","May","June",
+        "July","August","September","October","November","December"]
 
 @finance.route('/finances')
 def finance_main():

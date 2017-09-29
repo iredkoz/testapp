@@ -5,6 +5,7 @@ import datetime
 from forms import ListForm, ItemForm, CategoryForm, ProductForm, ShopForm, units
 from .. import db
 from ..models import Slist, Category, Product, Item, Shop, ProductSchema, ItemSchema, ListSchema, CategorySchema, ShopSchema
+from sqlalchemy import func
 
 def flash_errors(form):
     for field, errors in form.errors.items():
@@ -23,17 +24,25 @@ def shop_main():
     lists = Slist.query.all()
     cats = Category.query.all()
     shops = Shop.query.all()
+    prods = db.session.query(Slist.name, func.count(Item.id)).join(Item).group_by(Slist.id)
+    prods = dict(prods)
+
     return render_template('shopapp/shopapp.html',units=units,lists=lists,listForm=listForm,
                            itemForm=itemForm,catForm=catForm, prodForm=prodForm, 
-                           shopForm=shopForm, cats=cats,shops=shops)
+                           shopForm=shopForm, cats=cats,shops=shops,prods=prods)
 
 
 @shopapp.route('/show_list/<slist>', methods=['GET'])
 def show_list(slist):
     prodForm=ProductForm()
-    items = Item.query.filter_by(slist = Slist.query.filter_by(name=slist).first()).all()
+    slist=slist = Slist.query.filter_by(name=slist).first()
+    items = Item.query.filter_by(slist = slist).all()
     cats = Category.query.all()
-    return render_template('shopapp/list.html',items=items, cats=cats, itemForm=ItemForm(),prodForm=prodForm)
+    #checked_sum = Item.query().filter_by(chk=True, slist=slist)
+    checked_sum=db.session.query(db.func.sum(Item.price)).filter(Item.chk==True,Item.slist==slist).scalar()
+    if checked_sum==None:
+        checked_sum=0
+    return render_template('shopapp/list.html',items=items, cats=cats, itemForm=ItemForm(),prodForm=prodForm,chk=checked_sum)
 
 @shopapp.route('/show_cat/<int:cat_id>', methods=['GET'])
 def show_cat(cat_id):

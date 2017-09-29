@@ -46,8 +46,8 @@
                     <li class="nav-item {%if request.endpoint.endswith('finance_main')%}active{%endif%}">
                         <a class="nav-link" href="{{url_for('finance.finance_main')}}"><div class="mx-2">Finances</div><span class="sr-only"></span></a>
                     </li>
-                    <li class="nav-item {%if request.endpoint.endswith('recepies_main')%}active{%endif%}">
-                        <a class="nav-link" href="{{url_for('recepieapp.recepies_main')}}"><div class="mx-2">Recepies</div><span class="sr-only"></span></a>
+                    <li class="nav-item {%if request.endpoint.endswith('recipes_main')%}active{%endif%}">
+                        <a class="nav-link" href="{{url_for('recipeapp.recipes_main')}}"><div class="mx-2">Recipes</div><span class="sr-only"></span></a>
                     </li>
                 </ul>
             </div>

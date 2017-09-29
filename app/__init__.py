@@ -30,8 +30,8 @@ def create_app(config_name):
     from .home import home as home_blueprint
     app.register_blueprint(home_blueprint)
 
-    from .recepieapp import recepieapp as recepieapp_blueprint
-    app.register_blueprint(recepieapp_blueprint)
+    from .recipeapp import recipeapp as recipeapp_blueprint
+    app.register_blueprint(recipeapp_blueprint)
 
     from .shopapp import shopapp as shopapp_blueprint
     app.register_blueprint(shopapp_blueprint)

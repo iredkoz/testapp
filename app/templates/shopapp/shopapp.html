@@ -14,15 +14,16 @@
             </ul>
         </nav>
     </div>
-    <div class="tab-content">
+
+   <div class="tab-content">
         <div id="lists" class="tab-pane fade-in">
             <ul id="lists" class="list-group">
                 {% for list in lists %}
                 <div class="list-group-item py-0 border-left-0 border-right-0 rounded-0">
                     <div class="d-flex flex-row w-100 align-items-center justify-content-end">
-                        <a href="{{ url_for('shopapp.show_list',slist=list.name) }}" class="" style="font-size:120%">{{ list.name }}</a><span class="badge badge-info badge-pill mx-2" id="{{ list.name }}"></span>
+                        <a href="{{ url_for('shopapp.show_list',slist=list.name) }}" class="" style="font-size:120%">{{ list.name }}<span class="badge badge-info badge-pill mx-2" id="{{ list.name }}">{{ prods[list.name] }}</span></a>
                         <small class="mx-4">{{ list.date.strftime('%d %b %y') }}</small>
-                        <button class="btn btn-link ml-auto h-50" data-toggle="modal" data-target="#editList" data-list-id="{{ list.id }}"><i class="fa fa-edit fa-lg"></i></button>
+                        <button class="btn btn-link ml-auto h-50" data-toggle="modal" data-target="#newList" data-list-id="{{ list.id }}" data-action="edit"><i class="fa fa-edit fa-lg"></i></button>
                         <button id="{{ list.name }}" data-url="{{ url_for('shopapp.delList', slist_id=list.id) }}" class="btn btn-link mx-2 h-50 delList"><i class="fa fa-trash fa-lg"></i></button>
                     </div>
                     <p class="mb-1" style="font-size:90%">{{ list.note }}</p>
@@ -39,7 +40,7 @@
                 <div class="list-group-item py-0 border-left-0 border-right-0 rounded-0">
                     <div class="d-flex flex-row w-100 align-items-center justify-content-end">
                         <a class="mb-1" style="font-size:120%" href="{{ url_for('shopapp.show_cat',cat_id=cat.id) }}">{{ cat.name }}</a>
-                        <button class="btn btn-link ml-auto h-50" data-toggle="modal" data-target="#editCategory" data-cat-id="{{ cat.id }}"><i class="fa fa-edit fa-lg"></i></button>
+                        <button class="btn btn-link ml-auto h-50" data-toggle="modal" data-target="#newCat" data-cat-id="{{ cat.id }}" data-action="edit"><i class="fa fa-edit fa-lg"></i></button>
                         <button id="{{ cat.name }}" data-url="{{ url_for('shopapp.delCat', cat_id=cat.id) }}" class="btn btn-link mx-2 h-50 delCat"><i class="fa fa-trash fa-lg"></i></button>
                     </div>
                     <p class="mb-1" style="font-size:90%">{{ cat.note }}</p>
@@ -55,7 +56,7 @@
                 <div class="list-group-item py-0 border-left-0 border-right-0 rounded-0">
                     <div class="d-flex flex-row w-100 align-items-center justify-content-end">
                         <p href="#" class="mb-1" style="font-size:120%">{{ shop.name }}</p>
-                        <button class="btn btn-link ml-auto h-50" data-toggle="modal" data-target="#newShop" data-shop-id="{{ shop.id }}"data-action="edit"><i class="fa fa-edit fa-lg"></i></button>
+                        <button class="btn btn-link ml-auto h-50" data-toggle="modal" data-target="#newShop" data-shop-id="{{ shop.id }}" data-action="edit"><i class="fa fa-edit fa-lg"></i></button>
                         <button id="{{ shop.name }}" data-url="{{ url_for('shopapp.delShop', shop_id=shop.id) }}" class="btn btn-link mx-2 h-50 delShop"><i class="fa fa-trash fa-lg"></i></button>
                     </div>
                     <p class="mb-1" style="font-size:90%">{{ shop.note }}</p>
@@ -103,40 +104,6 @@
 {{ shopForm.note }}
 {% endcall %}
 
-{% call make_modal('editList', 'Edit list', '/edit-list', 'editListForm')%}
-{{ listForm.csrf_token }}
-<small class="my-0 py-0">{{ listForm.name.label(class='my-0') }}</small>
-{{ listForm.name(required='required') }}
-{% for error in listForm.errors.name %}
-<span style="color: red;">[{{error}}]</span>
-{% endfor %}
-<small class="my-0 py-0">{{ listForm.note.label(class='my-0') }}</small>
-{{ listForm.note }}
-{% endcall %}
-
-{% call make_modal('editCategory', 'Edit category', '/edit-category', 'editCatForm')%}
-{{ catForm.csrf_token }}
-<small class="my-0 py-0">{{ catForm.name.label(class='my-0') }}</small>
-{{ catForm.name(required='required') }}
-{% for error in catForm.errors.name %}
-<span style="color: red;">[{{error}}]</span>
-{% endfor %}
-<small class="my-0 py-0">{{ catForm.note.label(class='my-0') }}</small>
-{{ catForm.note }}
-{% endcall %}
-
-{% call make_modal('editShop', 'Edit shop', '/edit-shop', 'editShopForm')%}
-{{ shopForm.csrf_token }}
-<small class="my-0 py-0">{{ shopForm.name.label(class='my-0') }}</small>
-{{ shopForm.name(required='required') }}
-{% for error in shopForm.errors.name %}
-<span style="color: red;">[{{error}}]</span>
-{% endfor %}
-<small class="my-0 py-0">{{ shopForm.note.label(class='my-0') }}</small>
-{{ shopForm.note }}
-{% endcall %}
-
-
 <script type="text/javascript">
     var units = {{ units|safe }}
     var $SCRIPT_ROOT={{ request.script_root|tojson|safe }};
@@ -166,34 +133,48 @@
             localStorage.setItem('lastTab','#' + list_id);
         });
 
-        $('#editList').on('show.bs.modal', function(e){
+        $('#newList').on('show.bs.modal', function(e){
             var button=$(e.relatedTarget);
-            var list_id=button.data('list-id')
+            var action=button.data('action')
+            if(action=="edit"){
+                var list_id=button.data('list-id')
+                $.getJSON($SCRIPT_ROOT+'/_get_list',{
+                    list_id: list_id,
+                },
+                          function(data){
+                    list=data.data;
+                    $("#newListForm").attr("action","/edit-list/"+list_id);
+                    $("#newListForm input[id=name]").val(list.name);
+                    $("#newListForm textarea[id=note]").val(list.note);
+                    $("#newList h5").text("Edit");
 
-            $.getJSON($SCRIPT_ROOT+'/_get_list',{
-                list_id: list_id,
-            },
-                      function(data){
-                list=data.data;
-                $("#editListForm").attr("action","/edit-list/"+list_id);
-                $("#editListForm input[id=name]").val(list.name);
-                $("#editListForm textarea[id=note]").val(list.note);
-            });
+                });
+            }
+            else{
+                    $("#newList h5").text("Add new list");
+                }
+            
         });
 
-        $('#editCategory').on('show.bs.modal', function(e){
+        $('#newCat').on('show.bs.modal', function(e){
             var button=$(e.relatedTarget);
-            var cat_id=button.data('cat-id')
-
-            $.getJSON($SCRIPT_ROOT+'/_get_category',{
-                cat_id: cat_id,
-            },
-                      function(data){
-                cat=data.data;
-                $("#editCatForm").attr("action","/edit-category/"+cat_id);
-                $("#editCatForm input[id=name]").val(cat.name);
-                $("#editCatForm textarea[id=note]").val(cat.note);
-            });
+            var action=button.data('action')
+            if(action=="edit"){
+                var cat_id=button.data('cat-id')
+                $.getJSON($SCRIPT_ROOT+'/_get_category',{
+                    cat_id: cat_id,
+                },
+                          function(data){
+                    cat=data.data;
+                    $("#newCatForm").attr("action","/edit-category/"+cat_id);
+                    $("#newCatForm input[id=name]").val(cat.name);
+                    $("#newCatForm textarea[id=note]").val(cat.note);
+                    $("#newCat h5").text("Edit");
+                });
+            }
+            else{
+                    $("#newCat h5").text("Add new category");
+                }
         });
 
         $('#newShop').on('show.bs.modal', function(e){
@@ -210,8 +191,12 @@
                     $("#newShopForm").attr("action","/edit-shop/"+shop_id);
                     $("#newShopForm input[id=name]").val(shop.name);
                     $("#newShopForm textarea[id=note]").val(shop.note);
+                    $("#newShop h5").text("Edit");
                 });
             }
+            else{
+                    $("#newShop h5").text("Add new shop");
+                }
         });
 
         $('.modal').on('hidden.bs.modal',function(){

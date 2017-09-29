@@ -133,8 +133,10 @@
                     $("#newProdForm textarea[id=note]").val(prod.note);
                     $("#newProdForm input[id=size]").val(prod.size);
                     $("#newProdForm input[id=unit]").val(prod.unit);
+                    $("h5").text(prod.name);
                 });
             }
+            else{$("h5").text("Add new product");}
         });        
         
          $('.modal').on('hidden.bs.modal',function(){

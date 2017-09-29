@@ -25,21 +25,21 @@
                 </div>
                 <div class="col align-self-center ml-2">{{ item.product.name }}</div>
                 <div class="d-flex flex-column mr-4">
-                    <p class="my-0">${{ item.price }}</p>
-                   <p class="my-0">{{ item.qnty }}</p> 
+                    <p id="item-price" class="my-0">${{ item.price }}</p>
+                   <p id="item-qnty" class="my-0">{{ item.qnty }}</p> 
                 </div>  
                 <div class="d-flex flex-row">
-                    <button class="btn btn-link ml-auto h-50" data-toggle="modal" data-target="#editItem" data-item-id="{{ item.id }}" data-list-id="{{ item.slist }}" data-product-name="{{ item.product.name }}"><i class="fa fa-edit fa-lg"></i></button>
+                    <button class="btn btn-link ml-auto h-50" data-toggle="modal" data-target="#editItem" data-item-id="{{ item.id }}" data-list-id="{{ item.slist }}" data-product-name="{{ item.product.name }}" data-action="edit"><i class="fa fa-edit fa-lg"></i></button>
                     <button id="delItem" data-url="{{ url_for('shopapp.delItem', item_id = item.id) }}" class="btn btn-link mx-2 h-50 delItem"><i class="fa fa-trash fa-lg"></i></button>
                 </div>
             </div>
         </li>
         {% endfor %}
-        <li> Total spent:</li>
+        <li> Total spent:{{ chk }}</li>
     </ul>
     <div class="d-flex justify-content-between">
         <button class="btn btn-outline-primary my-2" style="border-radius:20px" data-toggle="modal" data-target="#addItem">+Add Item</button>
-        <button class="btn btn-outline-primary my-2" style="border-radius:20px" data-toggle="modal" data-target="#newItem">+New Item</button>
+        <button class="btn btn-outline-primary my-2" style="border-radius:20px" data-toggle="modal" data-target="#newProduct">+New Product</button>
     </div>        
 
 </div>
@@ -93,7 +93,7 @@
 </div>
 {% endcall %}
 
-{% call make_modal('newItem', 'Create new product', '/new-product', 'newProdForm')%}
+{% call make_modal('newProduct', 'Create new product', '/new-product', 'newProdForm')%}
 {{ prodForm.csrf_token }}
 <div class="d-flex flex-inline">
     <div class="form-group col-6">
@@ -132,7 +132,7 @@
 {% endcall %}
 
 
-{% call make_modal('price_qnty', "Price and Qnty", '', '')%}
+{% call make_modal('newItem', "Price and Qnty", '', '')%}
 
 <form class="form-group" method="post" action="/new-item" id="newItemForm">
     {{ itemForm.csrf_token }}
@@ -213,7 +213,7 @@
                     .addClass('list-group-item list-group-item-action')
                     .attr('data-product-name',products[i].name)
                     .attr('data-toggle','modal')
-                    .attr('data-target','#price_qnty')
+                    .attr('data-target','#newItem')
                     .text(products[i].name)
                     .appendTo(list);
                 });
@@ -243,8 +243,7 @@
             
         });
         
-        
-        $('#price_qnty').on('show.bs.modal',function(e){
+        $('#newItem').on('show.bs.modal',function(e){
 
             var button=$(e.relatedTarget);
             var product_name=button.data('product-name');
