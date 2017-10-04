@@ -13,6 +13,7 @@ ma = Marshmallow()
 def create_app(config_name):
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://ilya:ilya@localhost/testapp'
+    app.config['SQLALCHEMY_BINDS']={'recipe':'mysql://ilya:ilya@localhost/recipe'}
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = 'False'
     app.debug = True
     app.secret_key='super secret key'
@@ -21,7 +22,6 @@ def create_app(config_name):
     db.init_app(app)
     migrate = Migrate(app, db)
     
-
     from app import models
 
     from .finance import finance as finance_blueprint

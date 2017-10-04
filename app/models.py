@@ -65,7 +65,77 @@ class Finances(db.Model):
     shop_id=db.Column('shop_id',db.Integer,db.ForeignKey('shop.id'))
 
     shop = db.relationship('Shop',foreign_keys=shop_id, backref='finances')
+    
+class Recipes(db.Model):
+    __tablename__='recipes'
+    __bind_key__='recipe'
+    id = db.Column('id',db.Integer,primary_key=True)
+    name = db.Column('name',db.String(80))
+    note = db.Column('note',db.String(255))
+    category = db.Column('category',db.String(80))
+    subcategory = db.Column('subcat',db.String(80))
+    food_type = db.Column('food_type',db.String(80))
+    prep_time = db.Column('prep_time',db.Time)
+    favourite = db.Column('favourite',db.Boolean)
+    
+class Steps(db.Model):
+    __tablename__='steps'
+    __bind_key__='recipe'
+    id = db.Column('id',db.Integer,primary_key=True)
+    name = db.Column('name',db.String(80))
+    description = db.Column('description',db.String(2048))
+    recipe_id = db.Column('recipe_id',db.Integer,db.ForeignKey('recipes.id'))
+    recipe = db.relationship('Recipe',foreign_keys=recipe_id,backref='recipes')
+    
+class StepPhotos(db.Model):
+    __tablename__='step_photos'
+    __bind_key__='recipe'
+    id = db.Column('id',db.Integer,primary_key=True)
+    step_id = db.Column('step_id',db.Integer,db.ForeignKey('steps.id'))
+    step = db.relationship('Steps',foreign_keys=step_id,backref='steps')
+    photo_id = db.Column('photo_id',db.Integer,db.ForeignKey('photos.id'))
+    photo = db.relationship('Photos',foreign_keys=photo_id,backref='photos')
 
+class RecipePhotos(db.Model):
+    __tablename__='recipe_photos'
+    __bind_key__='recipe'
+    id = db.Column('id',db.Integer,primary_key=True)
+    recipe_id = db.Column('recipe_id',db.Integer,db.ForeignKey('recipes.id'))
+    recipe = db.relationship('Recipes',foreign_keys=recipe_id,backref='recipes')
+    photo_id = db.Column('photo_id',db.Integer,db.ForeignKey('photos.id'))
+    photo = db.relationship('Photos',foreign_keys=photo_id,backref='photos')
+
+class Photos(db.Model):
+    __tablename__='photos'
+    __bind_key__='recipe'
+    id = db.Column('id',db.Integer,primary_key=True)
+    filename = db.Column('filename',db.String(255))
+    
+class Ingridients(db.Model):
+    __tablename__='ingridients'
+    __bind_key__='recipe'
+    id = db.Column('id',db.Integer,primary_key=True)
+    name = db.Column('name',db.String(80))
+    note = db.Column('note',db.String(255))
+    category = db.Column('category',db.String(80))
+    
+class IngidientList(db.Model):
+    __tablename__='ingridient_list'
+    __bind_key__='recipe'
+    id = db.Column('id',db.Integer,primary_key=True)
+    quantity = db.Column('quantity',db.Numeric(precision=2, asdecimal=False, decimal_return_scale=None))
+    unit = db.Column('unit',db.String(50))
+    
+    recipe_id = db.Column('recipe_id',db.Integer,db.ForeignKey('recipes.id'))
+    recipe = db.relationship('Recipes',foreign_keys=recipe_id,backref='recipes')
+    
+    step_id = db.Column('step_id',db.Integer,db.ForeignKey('steps.id'))
+    step = db.relationship('Steps',foreign_keys=step_id,backref='steps')
+    
+    ingridient_id = db.Column('ingridient_id',db.Integer,db.ForeignKey('ingridients.id'))
+    ingridient = db.relationship('Ingridients',foreign_keys=ingridient_id,backref='ingridients')
+    
+    
 class CategorySchema(Schema):
     class Meta:
         fields=('id','name','note')
