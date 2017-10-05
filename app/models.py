@@ -77,33 +77,6 @@ class Recipes(db.Model):
     food_type = db.Column('food_type',db.String(80))
     prep_time = db.Column('prep_time',db.Time)
     favourite = db.Column('favourite',db.Boolean)
-    
-class Steps(db.Model):
-    __tablename__='steps'
-    __bind_key__='recipe'
-    id = db.Column('id',db.Integer,primary_key=True)
-    name = db.Column('name',db.String(80))
-    description = db.Column('description',db.String(2048))
-    recipe_id = db.Column('recipe_id',db.Integer,db.ForeignKey('recipes.id'))
-    recipe = db.relationship('Recipe',foreign_keys=recipe_id,backref='recipes')
-    
-class StepPhotos(db.Model):
-    __tablename__='step_photos'
-    __bind_key__='recipe'
-    id = db.Column('id',db.Integer,primary_key=True)
-    step_id = db.Column('step_id',db.Integer,db.ForeignKey('steps.id'))
-    step = db.relationship('Steps',foreign_keys=step_id,backref='steps')
-    photo_id = db.Column('photo_id',db.Integer,db.ForeignKey('photos.id'))
-    photo = db.relationship('Photos',foreign_keys=photo_id,backref='photos')
-
-class RecipePhotos(db.Model):
-    __tablename__='recipe_photos'
-    __bind_key__='recipe'
-    id = db.Column('id',db.Integer,primary_key=True)
-    recipe_id = db.Column('recipe_id',db.Integer,db.ForeignKey('recipes.id'))
-    recipe = db.relationship('Recipes',foreign_keys=recipe_id,backref='recipes')
-    photo_id = db.Column('photo_id',db.Integer,db.ForeignKey('photos.id'))
-    photo = db.relationship('Photos',foreign_keys=photo_id,backref='photos')
 
 class Photos(db.Model):
     __tablename__='photos'
@@ -119,6 +92,33 @@ class Ingridients(db.Model):
     note = db.Column('note',db.String(255))
     category = db.Column('category',db.String(80))
     
+class Steps(db.Model):
+    __tablename__='steps'
+    __bind_key__='recipe'
+    id = db.Column('id',db.Integer,primary_key=True)
+    name = db.Column('name',db.String(80))
+    description = db.Column('description',db.String(2048))
+    recipe_id = db.Column('recipe_id',db.Integer,db.ForeignKey('recipes.id'))
+    recipe = db.relationship('Recipes',foreign_keys=recipe_id,backref='step_recipes')
+    
+class StepPhotos(db.Model):
+    __tablename__='step_photos'
+    __bind_key__='recipe'
+    id = db.Column('id',db.Integer,primary_key=True)
+    step_id = db.Column('step_id',db.Integer,db.ForeignKey('steps.id'))
+    step = db.relationship('Steps',foreign_keys=step_id,backref='step_photo_steps')
+    photo_id = db.Column('photo_id',db.Integer,db.ForeignKey('photos.id'))
+    photo = db.relationship('Photos',foreign_keys=photo_id,backref='step_photo_photos')
+
+class RecipePhotos(db.Model):
+    __tablename__='recipe_photos'
+    __bind_key__='recipe'
+    id = db.Column('id',db.Integer,primary_key=True)
+    recipe_id = db.Column('recipe_id',db.Integer,db.ForeignKey('recipes.id'))
+    recipe = db.relationship('Recipes',foreign_keys=recipe_id,backref='recipe_photo_recipes')
+    photo_id = db.Column('photo_id',db.Integer,db.ForeignKey('photos.id'))
+    photo = db.relationship('Photos',foreign_keys=photo_id,backref='recipe_photo_photos')
+
 class IngidientList(db.Model):
     __tablename__='ingridient_list'
     __bind_key__='recipe'
@@ -127,13 +127,13 @@ class IngidientList(db.Model):
     unit = db.Column('unit',db.String(50))
     
     recipe_id = db.Column('recipe_id',db.Integer,db.ForeignKey('recipes.id'))
-    recipe = db.relationship('Recipes',foreign_keys=recipe_id,backref='recipes')
+    recipe = db.relationship('Recipes',foreign_keys=recipe_id,backref='ingr_list_recipes')
     
     step_id = db.Column('step_id',db.Integer,db.ForeignKey('steps.id'))
-    step = db.relationship('Steps',foreign_keys=step_id,backref='steps')
+    step = db.relationship('Steps',foreign_keys=step_id,backref='ingr_list_steps')
     
     ingridient_id = db.Column('ingridient_id',db.Integer,db.ForeignKey('ingridients.id'))
-    ingridient = db.relationship('Ingridients',foreign_keys=ingridient_id,backref='ingridients')
+    ingridient = db.relationship('Ingridients',foreign_keys=ingridient_id,backref='ingr_list_ingridients')
     
     
 class CategorySchema(Schema):

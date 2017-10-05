@@ -1,10 +1,15 @@
 body {
     padding-top: 65px;
+    background-color: #ecf0f1;
 }
 
+#main-menu.navbar{
+    background-color: #517396;
+}
 .navbar {
   background-color: #92b6d5;
 }
+
 .navbar .navbar-brand {
   color: #ecf0f1;
 }
@@ -98,4 +103,18 @@ h1,h2,h3,h4,h5,h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 p,a {
   font-family: 'Imprima', sans-serif;
+}
+
+.btn-outline-primary {
+    color:#455b76;
+    border-color: #455b76;
+}
+
+.btn-outline-primary:hover
+{
+    color:#F6F7F5;
+    background-color: #455b76;
+    border:0;
+
+    
 }

@@ -7,16 +7,20 @@ from flask_marshmallow import Marshmallow
 
 from config import app_config
 
+UPLOAD_FOLDER = '/var/uploads/'
+
 db = SQLAlchemy()
 ma = Marshmallow()
 
 def create_app(config_name):
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://ilya:ilya@localhost/testapp'
+    app.config['SQLALCHEMY_DATABASE_URI']='mysql://ilya:ilya@localhost/testapp'
     app.config['SQLALCHEMY_BINDS']={'recipe':'mysql://ilya:ilya@localhost/recipe'}
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = 'False'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS']='False'
     app.debug = True
     app.secret_key='super secret key'
+    
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
     Bootstrap(app)
     db.init_app(app)
