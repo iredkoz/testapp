@@ -24,8 +24,17 @@ def category(cat):
 def show_recipe(recipe_id):
     recipe = Recipes.query.get(recipe_id)
     steps = Steps.query.filter_by(recipe = recipe).all()
-    return redner_template('recipeapp/recipe.html',recipe=recipe,steps=steps)
+    return render_template('recipeapp/recipe.html',recipe=recipe,steps=steps)
 
-@recipeapp.route('/editor',methods = ['GET','POST'])
-def editor():
-    pass
+@recipeapp.route('/new-ingridient',methods = ['GET','POST'])
+def new_ingridient():
+    itemForm=IngridientForm()
+    if itemForm.validate_on_submit():
+        if Ingridients.query.filter_by(name=itemForm.name.data).first():
+            flash('Item already exists!','alert-danger')
+        else:
+            item = Ingridients(name=itemForm.name.data, note = itemForm.note.data, category=itemForm.cat.data)
+            db.session.add(item)
+            db.session.commit()
+            flash('Item added successfully!','alert-success')
+    return render_template('recipeapp/editor.html',itemForm=itemForm)

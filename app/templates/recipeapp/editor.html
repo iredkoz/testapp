@@ -7,7 +7,64 @@
 
 
 {% block content %}
-<div class="container">
-    <h5>Add new ingridients and recipes!</h5>
+
+<div class="container-fluid">
+    <nav class="navbar navbar-expand" id="main-menu" style="border-radius:20px">
+        <a class="navbar-brand" href="{{ url_for('recipeapp.recipes_main') }}">
+            <i class="fa fa-cutlery"></i>
+        </a>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="#">New Recipe+</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('recipeapp.new_ingridient') }}">New Ingridient+</a>
+            </li>
+        </ul>
+
+        <form class="form-inline ml-auto">
+            <div class="input-group">
+                <input class="form-control" type="text" placeholder="Search" aria-label="Search">
+                <span class="input-group-btn">
+                    <button class="btn btn-outline-light" type="submit">Go!</button>
+                </span>
+            </div>
+        </form>
+    </nav>
+</div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+ <ul class="flashes">
+     {% for m in messages %}
+      <div class="alert {{ category }}" role="alert">{{ m }}</div>
+     {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+
+<div class="container-fluid mt-2">
+    {% if request.endpoint.endswith('new_ingridient')%}
+    <form method="post" action="/new-ingridient">
+        <div class="form-group">
+            {{ itemForm.csrf_token }}
+            <div class="form-group">
+            <small class="my-0 py-0">{{ itemForm.name.label }}</small> {{ itemForm.name(size=20) }}
+            </div>
+            <div class="form-group">
+            <small class="my-0 py-0">{{ itemForm.cat.label }}</small> {{ itemForm.cat }}
+            </div>
+            <div class="form-group">
+            <small class="my-0 py-0">{{ itemForm.note.label }}</small> {{ itemForm.note }}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary my-2">SAVE</button>
+    </form>
+
+
+    {% endif %}
+
+    {% if request.endpoint.endswith('new_recipe')%}
+
+    {% endif %}
 </div>
 {% endblock %}
