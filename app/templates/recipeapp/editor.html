@@ -15,7 +15,7 @@
         </a>
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link" href="#">New Recipe+</a>
+                <a class="nav-link" href="{{ url_for('recipeapp.new_recipe') }}">New Recipe+</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('recipeapp.new_ingridient') }}">New Ingridient+</a>
@@ -32,15 +32,22 @@
         </form>
     </nav>
 </div>
-{% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
- <ul class="flashes">
-     {% for m in messages %}
-      <div class="alert {{ category }}" role="alert">{{ m }}</div>
-     {% endfor %}
-</ul>
-{% endif %}
-{% endwith %}
+<div class="container-fluid mr-2 my-4">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for c,m in messages %}
+        <div class="alert {{ c }}" role="alert">
+            <button type=button class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            {{ m }}
+        </div>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+</div>
 
 <div class="container-fluid mt-2">
     {% if request.endpoint.endswith('new_ingridient')%}
@@ -48,23 +55,51 @@
         <div class="form-group">
             {{ itemForm.csrf_token }}
             <div class="form-group">
-            <small class="my-0 py-0">{{ itemForm.name.label }}</small> {{ itemForm.name(size=20) }}
+                <small class="my-0 py-0">{{ itemForm.name.label }}</small> {{ itemForm.name(size=20) }}
             </div>
             <div class="form-group">
-            <small class="my-0 py-0">{{ itemForm.cat.label }}</small> {{ itemForm.cat }}
+                <small class="my-0 py-0">{{ itemForm.cat.label }}</small> {{ itemForm.cat }}
             </div>
             <div class="form-group">
-            <small class="my-0 py-0">{{ itemForm.note.label }}</small> {{ itemForm.note }}
+                <small class="my-0 py-0">{{ itemForm.note.label }}</small> {{ itemForm.note }}
             </div>
         </div>
         <button type="submit" class="btn btn-primary my-2">SAVE</button>
     </form>
-
-
     {% endif %}
 
     {% if request.endpoint.endswith('new_recipe')%}
-
+    <form method="post" action="/new-ingridient">
+        <div class="form-group">
+            {{ form.csrf_token }}
+            <div class="form-group">
+                <small class="my-0 py-0">{{ form.name.label }}</small> {{ form.name(size=20) }}
+            </div>
+            <div class="form-group">
+                <small class="my-0 py-0">{{ form.category.label }}</small> {{ form.category() }}
+            </div>
+            <div class="form-group">
+                <small class="my-0 py-0">{{ form.subcategory.label }}</small> {{ form.subcategory() }}
+            </div>
+            <div class="form-group">
+                <small class="my-0 py-0">{{ form.cuisine.label }}</small> {{ form.cuisine() }}
+            </div>
+            <div class="form-group">
+                <small class="my-0 py-0">{{ form.description.label }}</small> {{ form.description() }}
+            </div>
+            <div class="form-group">
+                <small class="my-0 py-0">{{ form.prep_time.label }}</small> {{ form.prep_time() }}
+            </div>
+            <div class="form-group">
+                <small class="my-0 py-0">{{ form.favourite.label }}</small> {{ form.favourite() }}
+            </div>
+            <div class="form-group">
+                {{ form.ingridients }}
+            </div>
+            
+        </div>
+        <button type="submit" class="btn btn-primary my-2">SAVE</button>
+    </form>
     {% endif %}
 </div>
 {% endblock %}

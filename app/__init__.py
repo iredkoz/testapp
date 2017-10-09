@@ -14,8 +14,8 @@ ma = Marshmallow()
 
 def create_app(config_name):
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI']='mysql://ilya:ilya@localhost/testapp'
-    app.config['SQLALCHEMY_BINDS']={'recipe':'mysql://ilya:ilya@localhost/recipe'}
+    app.config['SQLALCHEMY_DATABASE_URI']='mysql://ilya:ilya@localhost/testapp?charset=utf8'
+    app.config['SQLALCHEMY_BINDS']={'recipe':'mysql://ilya:ilya@localhost/recipe?charset=utf8'}
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS']='False'
     app.debug = True
     app.secret_key='super secret key'

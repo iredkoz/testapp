@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
 from flask import render_template, request, redirect, flash,url_for, jsonify
 from . import recipeapp
 
 import simplejson as json
 import datetime
-from forms import IngridientForm, StepForm
+from forms import IngridientForm, StepForm, RecipeForm
 from .. import db
 from ..models import Recipes, Ingridients, Steps, StepPhotos, RecipePhotos,IngidientList
 #from ..models import RecipesSchema, IngridientsSchema, StepsSchema, StepsPhotosSchema, RecipePhotosSchema, IngridientListSchema
@@ -38,3 +39,8 @@ def new_ingridient():
             db.session.commit()
             flash('Item added successfully!','alert-success')
     return render_template('recipeapp/editor.html',itemForm=itemForm)
+
+@recipeapp.route('/new-recipe',methods = ['GET','POST'])
+def new_recipe():
+    form = RecipeForm()
+    return render_template('recipeapp/editor.html',form=form)
