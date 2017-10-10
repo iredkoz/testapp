@@ -37,6 +37,7 @@ class RecipeForm(FlaskForm):
     prep_time =IntegerField('Cooking time',render_kw={"class":"form-control","type":"range"})
     favourite = BooleanField('Favourite',render_kw={"class":"form-control"})
     
-    ingridients = FieldList(FormField(RecipeIngridientForm,render_kw={"class":"form-group row"}),min_entries=1)
+    ingridients = FieldList(FormField(RecipeIngridientForm,render_kw={"class":"form-field"}),min_entries=1)
+    steps = FieldList(FormField(StepForm,render_kw={"class":"form-field"}),min_entries=1)
     
     

@@ -93,10 +93,19 @@
             <div class="form-group">
                 <small class="my-0 py-0">{{ form.favourite.label }}</small> {{ form.favourite() }}
             </div>
-            <div class="form-group">
-                {{ form.ingridients }}
+
+            {% for f in form.ingridients %}
+            <div class="form-group row">
+                {% for subf in f %}
+                <div class="col">
+                    {% if (subf.widget.input_type != 'hidden') %}
+                    {% endif %}
+                    {{ subf }}
+                </div>
+                {% endfor %}
             </div>
-            
+            {% endfor %}
+
         </div>
         <button type="submit" class="btn btn-primary my-2">SAVE</button>
     </form>

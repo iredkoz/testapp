@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
 from flask_marshmallow import Marshmallow
+from flask_dropzone import Dropzone
 
 from config import app_config
 
@@ -25,6 +26,7 @@ def create_app(config_name):
     Bootstrap(app)
     db.init_app(app)
     migrate = Migrate(app, db)
+    dropzone=Dropzone(app)
     
     from app import models
 

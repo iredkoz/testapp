@@ -43,4 +43,7 @@ def new_ingridient():
 @recipeapp.route('/new-recipe',methods = ['GET','POST'])
 def new_recipe():
     form = RecipeForm()
+    if request.method=='POST':
+        f = request.files['photo']
+        f.save(os.path.join(app.config['UPLOAD_FOLDER'], f.filename))
     return render_template('recipeapp/editor.html',form=form)
