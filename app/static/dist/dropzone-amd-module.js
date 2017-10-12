@@ -1,3 +1,15 @@
+// Uses AMD or browser globals to create a jQuery plugin.
+(function (factory) {
+  if (typeof define === 'function' && define.amd) {
+      // AMD. Register as an anonymous module.
+      define(['jquery'], factory);
+  } else {
+      // Browser globals
+      factory(jQuery);
+  }
+} (function (jQuery) {
+    var module = { exports: { } }; // Fake component
+
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -67,7 +79,7 @@ var Emitter = function () {
           args[_key - 1] = arguments[_key];
         }
 
-        for (var _iterator = callbacks, _isArray = true, _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
+        for (var _iterator = callbacks, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
           var _ref;
 
           if (_isArray) {
@@ -547,7 +559,7 @@ var Dropzone = function (_Emitter) {
           var messageElement = void 0;
           this.element.className = this.element.className + " dz-browser-not-supported";
 
-          for (var _iterator2 = this.element.getElementsByTagName("div"), _isArray2 = true, _i2 = 0, _iterator2 = _isArray2 ? _iterator2 : _iterator2[Symbol.iterator]();;) {
+          for (var _iterator2 = this.element.getElementsByTagName("div"), _isArray2 = Array.isArray(_iterator2), _i2 = 0, _iterator2 = _isArray2 ? _iterator2 : _iterator2[Symbol.iterator]();;) {
             var _ref2;
 
             if (_isArray2) {
@@ -743,7 +755,7 @@ var Dropzone = function (_Emitter) {
             file.previewTemplate = file.previewElement; // Backwards compatibility
 
             this.previewsContainer.appendChild(file.previewElement);
-            for (var _iterator3 = file.previewElement.querySelectorAll("[data-dz-name]"), _isArray3 = true, _i3 = 0, _iterator3 = _isArray3 ? _iterator3 : _iterator3[Symbol.iterator]();;) {
+            for (var _iterator3 = file.previewElement.querySelectorAll("[data-dz-name]"), _isArray3 = Array.isArray(_iterator3), _i3 = 0, _iterator3 = _isArray3 ? _iterator3 : _iterator3[Symbol.iterator]();;) {
               var _ref3;
 
               if (_isArray3) {
@@ -759,7 +771,7 @@ var Dropzone = function (_Emitter) {
 
               node.textContent = file.name;
             }
-            for (var _iterator4 = file.previewElement.querySelectorAll("[data-dz-size]"), _isArray4 = true, _i4 = 0, _iterator4 = _isArray4 ? _iterator4 : _iterator4[Symbol.iterator]();;) {
+            for (var _iterator4 = file.previewElement.querySelectorAll("[data-dz-size]"), _isArray4 = Array.isArray(_iterator4), _i4 = 0, _iterator4 = _isArray4 ? _iterator4 : _iterator4[Symbol.iterator]();;) {
               if (_isArray4) {
                 if (_i4 >= _iterator4.length) break;
                 node = _iterator4[_i4++];
@@ -795,7 +807,7 @@ var Dropzone = function (_Emitter) {
               }
             };
 
-            for (var _iterator5 = file.previewElement.querySelectorAll("[data-dz-remove]"), _isArray5 = true, _i5 = 0, _iterator5 = _isArray5 ? _iterator5 : _iterator5[Symbol.iterator]();;) {
+            for (var _iterator5 = file.previewElement.querySelectorAll("[data-dz-remove]"), _isArray5 = Array.isArray(_iterator5), _i5 = 0, _iterator5 = _isArray5 ? _iterator5 : _iterator5[Symbol.iterator]();;) {
               var _ref4;
 
               if (_isArray5) {
@@ -829,7 +841,7 @@ var Dropzone = function (_Emitter) {
         thumbnail: function thumbnail(file, dataUrl) {
           if (file.previewElement) {
             file.previewElement.classList.remove("dz-file-preview");
-            for (var _iterator6 = file.previewElement.querySelectorAll("[data-dz-thumbnail]"), _isArray6 = true, _i6 = 0, _iterator6 = _isArray6 ? _iterator6 : _iterator6[Symbol.iterator]();;) {
+            for (var _iterator6 = file.previewElement.querySelectorAll("[data-dz-thumbnail]"), _isArray6 = Array.isArray(_iterator6), _i6 = 0, _iterator6 = _isArray6 ? _iterator6 : _iterator6[Symbol.iterator]();;) {
               var _ref5;
 
               if (_isArray6) {
@@ -862,7 +874,7 @@ var Dropzone = function (_Emitter) {
             if (typeof message !== "String" && message.error) {
               message = message.error;
             }
-            for (var _iterator7 = file.previewElement.querySelectorAll("[data-dz-errormessage]"), _isArray7 = true, _i7 = 0, _iterator7 = _isArray7 ? _iterator7 : _iterator7[Symbol.iterator]();;) {
+            for (var _iterator7 = file.previewElement.querySelectorAll("[data-dz-errormessage]"), _isArray7 = Array.isArray(_iterator7), _i7 = 0, _iterator7 = _isArray7 ? _iterator7 : _iterator7[Symbol.iterator]();;) {
               var _ref6;
 
               if (_isArray7) {
@@ -902,7 +914,7 @@ var Dropzone = function (_Emitter) {
         // To get the total number of bytes of the file, use `file.size`
         uploadprogress: function uploadprogress(file, progress, bytesSent) {
           if (file.previewElement) {
-            for (var _iterator8 = file.previewElement.querySelectorAll("[data-dz-uploadprogress]"), _isArray8 = true, _i8 = 0, _iterator8 = _isArray8 ? _iterator8 : _iterator8[Symbol.iterator]();;) {
+            for (var _iterator8 = file.previewElement.querySelectorAll("[data-dz-uploadprogress]"), _isArray8 = Array.isArray(_iterator8), _i8 = 0, _iterator8 = _isArray8 ? _iterator8 : _iterator8[Symbol.iterator]();;) {
               var _ref7;
 
               if (_isArray8) {
@@ -981,7 +993,7 @@ var Dropzone = function (_Emitter) {
         objects[_key2 - 1] = arguments[_key2];
       }
 
-      for (var _iterator9 = objects, _isArray9 = true, _i9 = 0, _iterator9 = _isArray9 ? _iterator9 : _iterator9[Symbol.iterator]();;) {
+      for (var _iterator9 = objects, _isArray9 = Array.isArray(_iterator9), _i9 = 0, _iterator9 = _isArray9 ? _iterator9 : _iterator9[Symbol.iterator]();;) {
         var _ref8;
 
         if (_isArray9) {
@@ -1031,8 +1043,7 @@ var Dropzone = function (_Emitter) {
     }
 
     if (_this.element.dropzone) {
-      //throw new Error("Dropzone already attached.");
-        return _this.element.dropzone;
+      throw new Error("Dropzone already attached.");
     }
 
     // Now add this dropzone to the instances.
@@ -1224,7 +1235,7 @@ var Dropzone = function (_Emitter) {
             var files = _this3.hiddenFileInput.files;
 
             if (files.length) {
-              for (var _iterator10 = files, _isArray10 = true, _i10 = 0, _iterator10 = _isArray10 ? _iterator10 : _iterator10[Symbol.iterator]();;) {
+              for (var _iterator10 = files, _isArray10 = Array.isArray(_iterator10), _i10 = 0, _iterator10 = _isArray10 ? _iterator10 : _iterator10[Symbol.iterator]();;) {
                 var _ref9;
 
                 if (_isArray10) {
@@ -1253,7 +1264,7 @@ var Dropzone = function (_Emitter) {
       // Setup all event listeners on the Dropzone object itself.
       // They're not in @setupEventListeners() because they shouldn't be removed
       // again when the dropzone gets disabled.
-      for (var _iterator11 = this.events, _isArray11 = true, _i11 = 0, _iterator11 = _isArray11 ? _iterator11 : _iterator11[Symbol.iterator]();;) {
+      for (var _iterator11 = this.events, _isArray11 = Array.isArray(_iterator11), _i11 = 0, _iterator11 = _isArray11 ? _iterator11 : _iterator11[Symbol.iterator]();;) {
         var _ref10;
 
         if (_isArray11) {
@@ -1386,7 +1397,7 @@ var Dropzone = function (_Emitter) {
       var activeFiles = this.getActiveFiles();
 
       if (activeFiles.length) {
-        for (var _iterator12 = this.getActiveFiles(), _isArray12 = true, _i12 = 0, _iterator12 = _isArray12 ? _iterator12 : _iterator12[Symbol.iterator]();;) {
+        for (var _iterator12 = this.getActiveFiles(), _isArray12 = Array.isArray(_iterator12), _i12 = 0, _iterator12 = _isArray12 ? _iterator12 : _iterator12[Symbol.iterator]();;) {
           var _ref11;
 
           if (_isArray12) {
@@ -1476,7 +1487,7 @@ var Dropzone = function (_Emitter) {
     key: "getExistingFallback",
     value: function getExistingFallback() {
       var getFallback = function getFallback(elements) {
-        for (var _iterator13 = elements, _isArray13 = true, _i13 = 0, _iterator13 = _isArray13 ? _iterator13 : _iterator13[Symbol.iterator]();;) {
+        for (var _iterator13 = elements, _isArray13 = Array.isArray(_iterator13), _i13 = 0, _iterator13 = _isArray13 ? _iterator13 : _iterator13[Symbol.iterator]();;) {
           var _ref12;
 
           if (_isArray13) {
@@ -1668,7 +1679,7 @@ var Dropzone = function (_Emitter) {
 
       return function () {
         var result = [];
-        for (var _iterator14 = items, _isArray14 = true, _i15 = 0, _iterator14 = _isArray14 ? _iterator14 : _iterator14[Symbol.iterator]();;) {
+        for (var _iterator14 = items, _isArray14 = Array.isArray(_iterator14), _i15 = 0, _iterator14 = _isArray14 ? _iterator14 : _iterator14[Symbol.iterator]();;) {
           var _ref13;
 
           if (_isArray14) {
@@ -1724,7 +1735,7 @@ var Dropzone = function (_Emitter) {
       var readEntries = function readEntries() {
         return dirReader.readEntries(function (entries) {
           if (entries.length > 0) {
-            for (var _iterator15 = entries, _isArray15 = true, _i16 = 0, _iterator15 = _isArray15 ? _iterator15 : _iterator15[Symbol.iterator]();;) {
+            for (var _iterator15 = entries, _isArray15 = Array.isArray(_iterator15), _i16 = 0, _iterator15 = _isArray15 ? _iterator15 : _iterator15[Symbol.iterator]();;) {
               var _ref14;
 
               if (_isArray15) {
@@ -1827,7 +1838,7 @@ var Dropzone = function (_Emitter) {
   }, {
     key: "enqueueFiles",
     value: function enqueueFiles(files) {
-      for (var _iterator16 = files, _isArray16 = true, _i17 = 0, _iterator16 = _isArray16 ? _iterator16 : _iterator16[Symbol.iterator]();;) {
+      for (var _iterator16 = files, _isArray16 = Array.isArray(_iterator16), _i17 = 0, _iterator16 = _isArray16 ? _iterator16 : _iterator16[Symbol.iterator]();;) {
         var _ref15;
 
         if (_isArray16) {
@@ -1916,7 +1927,7 @@ var Dropzone = function (_Emitter) {
       if (cancelIfNecessary == null) {
         cancelIfNecessary = false;
       }
-      for (var _iterator17 = this.files.slice(), _isArray17 = true, _i18 = 0, _iterator17 = _isArray17 ? _iterator17 : _iterator17[Symbol.iterator]();;) {
+      for (var _iterator17 = this.files.slice(), _isArray17 = Array.isArray(_iterator17), _i18 = 0, _iterator17 = _isArray17 ? _iterator17 : _iterator17[Symbol.iterator]();;) {
         var _ref16;
 
         if (_isArray17) {
@@ -2136,7 +2147,7 @@ var Dropzone = function (_Emitter) {
   }, {
     key: "processFiles",
     value: function processFiles(files) {
-      for (var _iterator18 = files, _isArray18 = true, _i19 = 0, _iterator18 = _isArray18 ? _iterator18 : _iterator18[Symbol.iterator]();;) {
+      for (var _iterator18 = files, _isArray18 = Array.isArray(_iterator18), _i19 = 0, _iterator18 = _isArray18 ? _iterator18 : _iterator18[Symbol.iterator]();;) {
         var _ref17;
 
         if (_isArray18) {
@@ -2183,7 +2194,7 @@ var Dropzone = function (_Emitter) {
     value: function cancelUpload(file) {
       if (file.status === Dropzone.UPLOADING) {
         var groupedFiles = this._getFilesWithXhr(file.xhr);
-        for (var _iterator19 = groupedFiles, _isArray19 = true, _i20 = 0, _iterator19 = _isArray19 ? _iterator19 : _iterator19[Symbol.iterator]();;) {
+        for (var _iterator19 = groupedFiles, _isArray19 = Array.isArray(_iterator19), _i20 = 0, _iterator19 = _isArray19 ? _iterator19 : _iterator19[Symbol.iterator]();;) {
           var _ref18;
 
           if (_isArray19) {
@@ -2202,7 +2213,7 @@ var Dropzone = function (_Emitter) {
         if (typeof file.xhr !== 'undefined') {
           file.xhr.abort();
         }
-        for (var _iterator20 = groupedFiles, _isArray20 = true, _i21 = 0, _iterator20 = _isArray20 ? _iterator20 : _iterator20[Symbol.iterator]();;) {
+        for (var _iterator20 = groupedFiles, _isArray20 = Array.isArray(_iterator20), _i21 = 0, _iterator20 = _isArray20 ? _iterator20 : _iterator20[Symbol.iterator]();;) {
           var _ref19;
 
           if (_isArray20) {
@@ -2370,7 +2381,7 @@ var Dropzone = function (_Emitter) {
       var xhr = new XMLHttpRequest();
 
       // Put the xhr object in the file objects to be able to reference it later.
-      for (var _iterator21 = files, _isArray21 = true, _i23 = 0, _iterator21 = _isArray21 ? _iterator21 : _iterator21[Symbol.iterator]();;) {
+      for (var _iterator21 = files, _isArray21 = Array.isArray(_iterator21), _i23 = 0, _iterator21 = _isArray21 ? _iterator21 : _iterator21[Symbol.iterator]();;) {
         var _ref20;
 
         if (_isArray21) {
@@ -2448,7 +2459,7 @@ var Dropzone = function (_Emitter) {
       }
 
       // Let the user add additional data if necessary
-      for (var _iterator22 = files, _isArray22 = true, _i24 = 0, _iterator22 = _isArray22 ? _iterator22 : _iterator22[Symbol.iterator]();;) {
+      for (var _iterator22 = files, _isArray22 = Array.isArray(_iterator22), _i24 = 0, _iterator22 = _isArray22 ? _iterator22 : _iterator22[Symbol.iterator]();;) {
         var _ref21;
 
         if (_isArray22) {
@@ -2512,7 +2523,7 @@ var Dropzone = function (_Emitter) {
     value: function _addFormElementData(formData) {
       // Take care of other input elements
       if (this.element.tagName === "FORM") {
-        for (var _iterator23 = this.element.querySelectorAll("input, textarea, select, button"), _isArray23 = true, _i25 = 0, _iterator23 = _isArray23 ? _iterator23 : _iterator23[Symbol.iterator]();;) {
+        for (var _iterator23 = this.element.querySelectorAll("input, textarea, select, button"), _isArray23 = Array.isArray(_iterator23), _i25 = 0, _iterator23 = _isArray23 ? _iterator23 : _iterator23[Symbol.iterator]();;) {
           var _ref22;
 
           if (_isArray23) {
@@ -2535,7 +2546,7 @@ var Dropzone = function (_Emitter) {
 
           if (input.tagName === "SELECT" && input.hasAttribute("multiple")) {
             // Possibly multiple values
-            for (var _iterator24 = input.options, _isArray24 = true, _i26 = 0, _iterator24 = _isArray24 ? _iterator24 : _iterator24[Symbol.iterator]();;) {
+            for (var _iterator24 = input.options, _isArray24 = Array.isArray(_iterator24), _i26 = 0, _iterator24 = _isArray24 ? _iterator24 : _iterator24[Symbol.iterator]();;) {
               var _ref23;
 
               if (_isArray24) {
@@ -2592,7 +2603,7 @@ var Dropzone = function (_Emitter) {
           }
           file.upload.progress = file.upload.progress / file.upload.totalChunkCount;
         } else {
-          for (var _iterator25 = files, _isArray25 = true, _i27 = 0, _iterator25 = _isArray25 ? _iterator25 : _iterator25[Symbol.iterator]();;) {
+          for (var _iterator25 = files, _isArray25 = Array.isArray(_iterator25), _i27 = 0, _iterator25 = _isArray25 ? _iterator25 : _iterator25[Symbol.iterator]();;) {
             var _ref24;
 
             if (_isArray25) {
@@ -2611,7 +2622,7 @@ var Dropzone = function (_Emitter) {
             _file2.upload.bytesSent = e.loaded;
           }
         }
-        for (var _iterator26 = files, _isArray26 = true, _i28 = 0, _iterator26 = _isArray26 ? _iterator26 : _iterator26[Symbol.iterator]();;) {
+        for (var _iterator26 = files, _isArray26 = Array.isArray(_iterator26), _i28 = 0, _iterator26 = _isArray26 ? _iterator26 : _iterator26[Symbol.iterator]();;) {
           var _ref25;
 
           if (_isArray26) {
@@ -2634,7 +2645,7 @@ var Dropzone = function (_Emitter) {
 
         progress = 100;
 
-        for (var _iterator27 = files, _isArray27 = true, _i29 = 0, _iterator27 = _isArray27 ? _iterator27 : _iterator27[Symbol.iterator]();;) {
+        for (var _iterator27 = files, _isArray27 = Array.isArray(_iterator27), _i29 = 0, _iterator27 = _isArray27 ? _iterator27 : _iterator27[Symbol.iterator]();;) {
           var _ref26;
 
           if (_isArray27) {
@@ -2660,7 +2671,7 @@ var Dropzone = function (_Emitter) {
           return;
         }
 
-        for (var _iterator28 = files, _isArray28 = true, _i30 = 0, _iterator28 = _isArray28 ? _iterator28 : _iterator28[Symbol.iterator]();;) {
+        for (var _iterator28 = files, _isArray28 = Array.isArray(_iterator28), _i30 = 0, _iterator28 = _isArray28 ? _iterator28 : _iterator28[Symbol.iterator]();;) {
           var _ref27;
 
           if (_isArray28) {
@@ -2733,7 +2744,7 @@ var Dropzone = function (_Emitter) {
         }
       }
 
-      for (var _iterator29 = files, _isArray29 = true, _i31 = 0, _iterator29 = _isArray29 ? _iterator29 : _iterator29[Symbol.iterator]();;) {
+      for (var _iterator29 = files, _isArray29 = Array.isArray(_iterator29), _i31 = 0, _iterator29 = _isArray29 ? _iterator29 : _iterator29[Symbol.iterator]();;) {
         var _ref28;
 
         if (_isArray29) {
@@ -2762,7 +2773,7 @@ var Dropzone = function (_Emitter) {
   }, {
     key: "_finished",
     value: function _finished(files, responseText, e) {
-      for (var _iterator30 = files, _isArray30 = true, _i32 = 0, _iterator30 = _isArray30 ? _iterator30 : _iterator30[Symbol.iterator]();;) {
+      for (var _iterator30 = files, _isArray30 = Array.isArray(_iterator30), _i32 = 0, _iterator30 = _isArray30 ? _iterator30 : _iterator30[Symbol.iterator]();;) {
         var _ref29;
 
         if (_isArray30) {
@@ -2796,7 +2807,7 @@ var Dropzone = function (_Emitter) {
   }, {
     key: "_errorProcessing",
     value: function _errorProcessing(files, message, xhr) {
-      for (var _iterator31 = files, _isArray31 = true, _i33 = 0, _iterator31 = _isArray31 ? _iterator31 : _iterator31[Symbol.iterator]();;) {
+      for (var _iterator31 = files, _isArray31 = Array.isArray(_iterator31), _i33 = 0, _iterator31 = _isArray31 ? _iterator31 : _iterator31[Symbol.iterator]();;) {
         var _ref30;
 
         if (_isArray31) {
@@ -2895,7 +2906,7 @@ Dropzone.discover = function () {
     var checkElements = function checkElements(elements) {
       return function () {
         var result = [];
-        for (var _iterator32 = elements, _isArray32 = true, _i34 = 0, _iterator32 = _isArray32 ? _iterator32 : _iterator32[Symbol.iterator]();;) {
+        for (var _iterator32 = elements, _isArray32 = Array.isArray(_iterator32), _i34 = 0, _iterator32 = _isArray32 ? _iterator32 : _iterator32[Symbol.iterator]();;) {
           var _ref31;
 
           if (_isArray32) {
@@ -2924,7 +2935,7 @@ Dropzone.discover = function () {
 
   return function () {
     var result = [];
-    for (var _iterator33 = dropzones, _isArray33 = true, _i35 = 0, _iterator33 = _isArray33 ? _iterator33 : _iterator33[Symbol.iterator]();;) {
+    for (var _iterator33 = dropzones, _isArray33 = Array.isArray(_iterator33), _i35 = 0, _iterator33 = _isArray33 ? _iterator33 : _iterator33[Symbol.iterator]();;) {
       var _ref32;
 
       if (_isArray33) {
@@ -2973,7 +2984,7 @@ Dropzone.isBrowserSupported = function () {
       capableBrowser = false;
     } else {
       // The browser supports the API, but may be blacklisted.
-      for (var _iterator34 = Dropzone.blacklistedBrowsers, _isArray34 = true, _i36 = 0, _iterator34 = _isArray34 ? _iterator34 : _iterator34[Symbol.iterator]();;) {
+      for (var _iterator34 = Dropzone.blacklistedBrowsers, _isArray34 = Array.isArray(_iterator34), _i36 = 0, _iterator34 = _isArray34 ? _iterator34 : _iterator34[Symbol.iterator]();;) {
         var _ref33;
 
         if (_isArray34) {
@@ -3074,7 +3085,7 @@ Dropzone.getElements = function (els, name) {
   if (els instanceof Array) {
     elements = [];
     try {
-      for (var _iterator35 = els, _isArray35 = true, _i37 = 0, _iterator35 = _isArray35 ? _iterator35 : _iterator35[Symbol.iterator]();;) {
+      for (var _iterator35 = els, _isArray35 = Array.isArray(_iterator35), _i37 = 0, _iterator35 = _isArray35 ? _iterator35 : _iterator35[Symbol.iterator]();;) {
         if (_isArray35) {
           if (_i37 >= _iterator35.length) break;
           el = _iterator35[_i37++];
@@ -3091,7 +3102,7 @@ Dropzone.getElements = function (els, name) {
     }
   } else if (typeof els === "string") {
     elements = [];
-    for (var _iterator36 = document.querySelectorAll(els), _isArray36 = true, _i38 = 0, _iterator36 = _isArray36 ? _iterator36 : _iterator36[Symbol.iterator]();;) {
+    for (var _iterator36 = document.querySelectorAll(els), _isArray36 = Array.isArray(_iterator36), _i38 = 0, _iterator36 = _isArray36 ? _iterator36 : _iterator36[Symbol.iterator]();;) {
       if (_isArray36) {
         if (_i38 >= _iterator36.length) break;
         el = _iterator36[_i38++];
@@ -3138,7 +3149,7 @@ Dropzone.isValidFile = function (file, acceptedFiles) {
   var mimeType = file.type;
   var baseMimeType = mimeType.replace(/\/.*$/, "");
 
-  for (var _iterator37 = acceptedFiles, _isArray37 = true, _i39 = 0, _iterator37 = _isArray37 ? _iterator37 : _iterator37[Symbol.iterator]();;) {
+  for (var _iterator37 = acceptedFiles, _isArray37 = Array.isArray(_iterator37), _i39 = 0, _iterator37 = _isArray37 ? _iterator37 : _iterator37[Symbol.iterator]();;) {
     var _ref34;
 
     if (_isArray37) {
@@ -3503,3 +3514,6 @@ function __guardMethod__(obj, methodName, transform) {
     return undefined;
   }
 }
+
+    return module.exports;
+}));

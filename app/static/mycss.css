@@ -114,7 +114,29 @@ p,a {
 {
     color:#F6F7F5;
     background-color: #455b76;
-    border:0;
+    border-color:#455b76;
+}
 
-    
+.dropzone{
+    position:relative;
+    border:2px dotted #CCC;
+    border-radius:20px;    
+}
+.dropzone:hover{
+    border:2px dotted #0086B3;
+}
+
+.favourite-lbl input[type="checkbox"],
+.favourite-lbl .checked{
+    display:none;
+}
+
+.favourite-lbl input[type="checkbox"]:checked ~ .checked
+{
+    display: inline-block;
+}
+
+.favourite-lbl input[type="checkbox"]:checked ~ .unchecked
+{
+    display: none;
 }

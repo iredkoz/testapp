@@ -4,11 +4,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
 from flask_marshmallow import Marshmallow
-from flask_dropzone import Dropzone
 
 from config import app_config
 
-UPLOAD_FOLDER = '/var/uploads/'
+
 
 db = SQLAlchemy()
 ma = Marshmallow()
@@ -21,12 +20,9 @@ def create_app(config_name):
     app.debug = True
     app.secret_key='super secret key'
     
-    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
     Bootstrap(app)
     db.init_app(app)
     migrate = Migrate(app, db)
-    dropzone=Dropzone(app)
     
     from app import models
 

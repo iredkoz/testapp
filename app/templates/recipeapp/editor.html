@@ -72,17 +72,28 @@
     <form method="post" action="/new-ingridient">
         <div class="form-group">
             {{ form.csrf_token }}
-            <div class="form-group">
-                <small class="my-0 py-0">{{ form.name.label }}</small> {{ form.name(size=20) }}
+            <div class="d-flex flex-row justify-content-start">
+                <div class="form-group">
+                    <small class="my-0 py-0">{{ form.name.label }}</small> {{ form.name(size=20) }}
+                </div>
+                <div class="form-check align-self-center">
+                    <label class="form-check-label favourite-lbl">
+                        {{ form.favourite(value='n') }} 
+                        <i class="fa fa-heart-o fa-2x unchecked" style="color:purple"></i>
+                        <i class="fa fa-heart fa-2x checked" style="color:purple"></i>
+                    </label>
+                </div>
             </div>
-            <div class="form-group">
-                <small class="my-0 py-0">{{ form.category.label }}</small> {{ form.category() }}
-            </div>
-            <div class="form-group">
-                <small class="my-0 py-0">{{ form.subcategory.label }}</small> {{ form.subcategory() }}
-            </div>
-            <div class="form-group">
-                <small class="my-0 py-0">{{ form.cuisine.label }}</small> {{ form.cuisine() }}
+            <div class="d-flex flex-row">
+                <div class="form-group">
+                    <small class="my-0 py-0">{{ form.category.label }}</small> {{ form.category() }}
+                </div>
+                <div class="form-group">
+                    <small class="my-0 py-0">{{ form.subcategory.label }}</small> {{ form.subcategory() }}
+                </div>
+                <div class="form-group">
+                    <small class="my-0 py-0">{{ form.cuisine.label }}</small> {{ form.cuisine() }}
+                </div>
             </div>
             <div class="form-group">
                 <small class="my-0 py-0">{{ form.description.label }}</small> {{ form.description() }}
@@ -90,25 +101,84 @@
             <div class="form-group">
                 <small class="my-0 py-0">{{ form.prep_time.label }}</small> {{ form.prep_time() }}
             </div>
-            <div class="form-group">
-                <small class="my-0 py-0">{{ form.favourite.label }}</small> {{ form.favourite() }}
-            </div>
+            <p class="text-center" style="backround-color:blue">INGRIDIENTS</p>
+            <input type="button" class="btn btn-outline-primary my-2 add-ingridients" value="Add ingridient">
 
-            {% for f in form.ingridients %}
-            <div class="form-group row">
-                {% for subf in f %}
-                <div class="col">
+            <div class="ingridients-list">
+                {% for f in form.ingridients %}
+                <div class="form-group form-inline ingridient-form" id="ingridient-form-{{ loop.index0 }}">
+                    {% for subf in f %}
                     {% if (subf.widget.input_type != 'hidden') %}
                     {% endif %}
-                    {{ subf }}
+                    {{ subf(class_="m-2") }}
+                    {% endfor %}
+                    <input type="button" class="btn btn-outline-danger ml-2" id="del-ingridient-0" value="X">
                 </div>
                 {% endfor %}
+                
             </div>
-            {% endfor %}
+            <div class="d-flex flex-row my-2">
+                <div class="dropzone" id="photoUpload">
+                </div>
+                {{ form.step(style="border-radius:20px") }}
+                <input type="button" class="btn btn-outline-danger ml-2" id="del-step-0" value="X">
+
+            </div>
 
         </div>
-        <button type="submit" class="btn btn-primary my-2">SAVE</button>
+        <button type="submit" class="btn btn-outline-primary my-2" id="submit_recipe">SAVE</button>
     </form>
+
     {% endif %}
 </div>
+<script>
+
+    $("div#photoUpload").dropzone({
+        url:"{{ url_for('recipeapp.upload_photo')}}",
+        uploadMultiple: false,
+        addRemoveLinks: true,
+        createImageThumbnails: true,
+        thumbnailWidth: 350,
+        //thumbnailHeight: 250,
+        thumbnailMethod: "contain",
+        acceptedFiles:".jpeg, .jpg, .png, .gif, .JPEG, .JPG, .PNG, .GIF",
+        autoProcessQueue: false,
+
+        init: function(){
+            var dropzone=this;
+            $("#submit_recipe").on("click", function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.processQueue();
+            });
+
+            this.on('success',function(file, message){
+                console.log(this.files);
+                if(this.files.length>1){
+                    this.removeFile(this.files[0]);
+                }
+            });
+
+        }
+
+    });
+
+
+    $(document).ready(function(){
+          var ingridients_index=0;
+           $(".add-ingridients").click(function(){
+               console.log('clicked');
+               ingridients_index++;
+               $("#ingridient-form-0").clone().attr("id","ingridient-form-"+ingridients_index).appendTo(".ingridients-list");
+               $("#ingridient-form-"+ingridients_index+".form-control").each(function(){
+                   $(this).attr("id",$(this).attr("id")+ingridients_index);
+               });
+           });
+        
+
+
+
+
+    });
+</script>
 {% endblock %}

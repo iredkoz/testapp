@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import render_template, request, redirect, flash,url_for, jsonify
 from . import recipeapp
-
+import os
 import simplejson as json
 import datetime
 from forms import IngridientForm, StepForm, RecipeForm
@@ -11,6 +11,7 @@ from ..models import Recipes, Ingridients, Steps, StepPhotos, RecipePhotos,Ingid
 
 import constants
 
+UPLOAD_FOLDER = '/var/uploads/'
 
 @recipeapp.route('/recipes')
 def recipes_main():
@@ -45,5 +46,12 @@ def new_recipe():
     form = RecipeForm()
     if request.method=='POST':
         f = request.files['photo']
-        f.save(os.path.join(app.config['UPLOAD_FOLDER'], f.filename))
+        f.save(os.path.join(UPLOAD_FOLDER, f.filename))
     return render_template('recipeapp/editor.html',form=form)
+
+@recipeapp.route('/upload-photo',methods = ['GET','POST'])
+def upload_photo():
+    if request.method=='POST':
+        f=request.files['file']
+        f.save(os.path.join(UPLOAD_FOLDER, f.filename))
+    return ('',204)
