@@ -112,10 +112,10 @@
                     {% endif %}
                     {{ subf(class_="m-2") }}
                     {% endfor %}
-                    <input type="button" class="btn btn-outline-danger ml-2" id="del-ingridient-0" value="X">
+                    <input type="button" class="btn btn-outline-danger ml-2 delete-ingridient" id="del-ingridient-0" value="X">
                 </div>
                 {% endfor %}
-                
+
             </div>
             <div class="d-flex flex-row my-2">
                 <div class="dropzone" id="photoUpload">
@@ -165,19 +165,36 @@
 
 
     $(document).ready(function(){
-          var ingridients_index=0;
-           $(".add-ingridients").click(function(){
-               console.log('clicked');
-               ingridients_index++;
-               $("#ingridient-form-0").clone().attr("id","ingridient-form-"+ingridients_index).appendTo(".ingridients-list");
-               $("#ingridient-form-"+ingridients_index+".form-control").each(function(){
-                   $(this).attr("id",$(this).attr("id")+ingridients_index);
-               });
-           });
-        
+        $('.select-ingridient').select2();
+
+        var ingridients_index=0;
+        $(".add-ingridients").click(function(){
+
+            ingridients_index++;
+
+            var newForm = $('.ingridient-form:first').clone();
+            $('.ingridients-list').append(newForm);
+            $(newForm).find('span.select2-container').remove();
+            $(newForm).find('.select2-hidden-accessible').removeClass('select2-hidden-accessible');
+
+            var select2 = $(newForm).find('select.select-ingridient');
+            select2.select2({
+                formatNoMatches: function(){
+                    return "No Match";
+                },
+                placeholder: 'Ingridient..'
+            });
+            //$("#ingridient-form-0").clone(true,true).attr("id","ingridient-form-"+ingridients_index).appendTo(".ingridients-list");
+            //$("#ingridient-form-"+ingridients_index+".form-control").each(function(){
+                //$(this).attr("id",$(this).attr("id")+ingridients_index);
+            //});
+            //$('.select-ingridient').select2();
+        });
 
 
-
+        $(document).on('click','.delete-ingridient',function(){
+            $(this).closest(".ingridient-form").remove();
+        });
 
     });
 </script>

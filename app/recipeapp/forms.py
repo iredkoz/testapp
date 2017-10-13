@@ -24,7 +24,7 @@ class StepForm(FlaskForm):
     photo = FileField('Picture',validators = [FileRequired(),FileAllowed(images,'Images only!')])
     
 class RecipeIngridientForm(FlaskForm):
-    name = QuerySelectField('Ingridient',query_factory=query_ingridients,  get_label='name',allow_blank=False, render_kw={"class":"form-control"})
+    name = QuerySelectField('Ingridient',query_factory=query_ingridients,  get_label='name',allow_blank=False, render_kw={"class":"form-control select-ingridient"})
     quantity = IntegerField('Quantity',render_kw={"class":"form-control"})
     unit = SelectField('Units',choices=[(item,item) for item in constants.units],render_kw={"class":"form-control"})
 
