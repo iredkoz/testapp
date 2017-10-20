@@ -34,10 +34,11 @@ class RecipeForm(FlaskForm):
     subcategory = SelectField('Sub-category', choices=[(item,item) for item in constants.subcategories],render_kw={"class":"form-control"})
     cuisine = SelectField('Cuisine', choices=[(item,item) for item in constants.cuisine],render_kw={"class":"form-control"})
     description = TextAreaField('Recipe description', render_kw={"placeholder":"Description..","class":"form-control"})
-    prep_time =IntegerField('Cooking time',render_kw={"class":"form-control","type":"range"})
+    prep_time =IntegerField('Cooking time',render_kw={"class":"form-control duration-picker","type":"range"})
     favourite = BooleanField('Favourite',render_kw={"class":"form-check-input"})
     
     ingridients = FieldList(FormField(RecipeIngridientForm,render_kw={"class":"form-group"}),min_entries=1)
-    step = TextAreaField('Description',render_kw={"placeholder":"What to do..","class":"form-control"})    
+    step = TextAreaField('Description',render_kw={"placeholder":"What to do..","class":"form-control"})
+    photo = HiddenField('Photo-1')
     
     

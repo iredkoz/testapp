@@ -117,13 +117,19 @@
                 {% endfor %}
 
             </div>
-            <div class="d-flex flex-row my-2">
-                <div class="dropzone" id="photoUpload">
-                </div>
-                {{ form.step(style="border-radius:20px") }}
-                <input type="button" class="btn btn-outline-danger ml-2" id="del-step-0" value="X">
 
+            <p class="text-center" style="backround-color:blue">Пошаговая инструкция</p>
+            <div class="steps-list">
+                <div class="d-flex flex-row my-2 step-form" id="step-form-1">
+                    <div class="dropzone" id="stepPhoto-1">
+                    </div>
+                    {{ form.photo(id="photo-1") }}
+                    {{ form.step(class="form-control step",id="step-1",style="border-radius:20px") }}
+                    <input type="button" class="btn btn-outline-danger ml-2 delete-step" id="del-step-0" value="X">
+
+                </div>
             </div>
+            <input type="button" class="btn btn-outline-primary my-2 add-step" value="Add step">
 
         </div>
         <button type="submit" class="btn btn-outline-primary my-2" id="submit_recipe">SAVE</button>
@@ -133,7 +139,7 @@
 </div>
 <script>
 
-    $("div#photoUpload").dropzone({
+    $("div#stepPhoto-1").dropzone({
         url:"{{ url_for('recipeapp.upload_photo')}}",
         uploadMultiple: false,
         addRemoveLinks: true,
@@ -142,7 +148,7 @@
         //thumbnailHeight: 250,
         thumbnailMethod: "contain",
         acceptedFiles:".jpeg, .jpg, .png, .gif, .JPEG, .JPG, .PNG, .GIF",
-        autoProcessQueue: false,
+        autoProcessQueue: true,
 
         init: function(){
             var dropzone=this;
@@ -153,10 +159,11 @@
             });
 
             this.on('success',function(file, message){
-                console.log(this.files);
                 if(this.files.length>1){
                     this.removeFile(this.files[0]);
                 }
+                input = $(dropzone).siblings('div.dz-preview');
+                console.log(input);
             });
 
         }
@@ -165,9 +172,68 @@
 
 
     $(document).ready(function(){
-        $('.select-ingridient').select2();
+
+        $('.duration-picker').durationPicker({
+            showDays:false,
+            showSeconds:false
+        });
+        //$('.hidden').hide();
+
+        $('.select-ingridient').select2({
+            placeholder: 'Select ingridient'
+        });
+
+        if($('.delete-ingridient').length < 2 ){$('.delete-ingridient').hide();}
+        if($('.delete-step').length < 2 ){$('.delete-step').hide();}
 
         var ingridients_index=0;
+        var steps_index=1;
+        
+        $(".add-step").click(function(){
+            steps_index++;
+
+            var newForm=$('.step-form:first').clone(true,true);
+            $('.steps-list').append(newForm);
+            $(newForm).find('textarea.step').attr('id','step-'+steps_index);
+            $(newForm).find('.dropzone').remove();
+            $('<div/>').addClass('dropzone').attr('id','stepPhoto-'+steps_index).prependTo(newForm);
+            $(newForm).attr("id",'step-form-'+steps_index);
+            $(newForm).find('#stepPhoto-'+steps_index).dropzone({
+                url:"{{ url_for('recipeapp.upload_photo')}}",
+                uploadMultiple: false,
+                addRemoveLinks: true,
+                createImageThumbnails: true,
+                thumbnailWidth: 350,
+                //thumbnailHeight: 250,
+                thumbnailMethod: "contain",
+                acceptedFiles:".jpeg, .jpg, .png, .gif, .JPEG, .JPG, .PNG, .GIF",
+                autoProcessQueue: true,
+
+                init: function(){
+                    var dropzone=this;
+                    $("#submit_recipe").on("click", function(e){
+                        e.preventDefault();
+                        e.stopPropagation();
+                        dropzone.processQueue();
+                    });
+
+                    this.on('success',function(file, message){
+                        console.log(this.files);
+                        if(this.files.length>1){
+                            this.removeFile(this.files[0]);
+                        }
+                        console.log(this.files);
+                    });
+
+                }
+
+            });
+            
+            if($('.delete-step').length > 1 ){$('.delete-step').show();}
+
+
+        });
+
         $(".add-ingridients").click(function(){
 
             ingridients_index++;
@@ -184,16 +250,33 @@
                 },
                 placeholder: 'Ingridient..'
             });
+            $(newForm).find('#ingridients-0-name').attr("id",'ingridients-'+ingridients_index+'-name');
+            $(newForm).find('#ingridients-0-quantity').attr("id",'ingridients-'+ingridients_index+'-quantity');
+            $(newForm).find('#ingridients-0-unit').attr("id",'ingridients-'+ingridients_index+'-unit');
+            if($('.delete-ingridient').length > 1 ){$('.delete-ingridient').show();}
+
             //$("#ingridient-form-0").clone(true,true).attr("id","ingridient-form-"+ingridients_index).appendTo(".ingridients-list");
             //$("#ingridient-form-"+ingridients_index+".form-control").each(function(){
-                //$(this).attr("id",$(this).attr("id")+ingridients_index);
-            //});
+            //$(this).attr("id",$(this).attr("id")+ingridients_index);
+            //}
             //$('.select-ingridient').select2();
         });
 
 
+        $('.select-ingridient').on('select2:close',function(){
+            result = $(this).find(':selected').val();
+            console.log(result);
+            console.log($(this).find(':selected').text());
+        });
+
         $(document).on('click','.delete-ingridient',function(){
             $(this).closest(".ingridient-form").remove();
+            if($('.delete-ingridient').length < 2 ){$('.delete-ingridient').hide();}
+        });
+
+        $(document).on('click','.delete-step',function(){
+            $(this).closest(".step-form").remove();
+            if($('.delete-step').length < 2 ){$('.delete-step').hide();}
         });
 
     });
