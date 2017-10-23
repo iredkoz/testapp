@@ -69,7 +69,7 @@
     {% endif %}
 
     {% if request.endpoint.endswith('new_recipe')%}
-    <form method="post" action="/new-ingridient">
+    <form method="post" action="/new-recipe" id="new_recipe_form">
         <div class="form-group">
             {{ form.csrf_token }}
             <div class="d-flex flex-row justify-content-start">
@@ -101,7 +101,7 @@
             <div class="form-group">
                 <small class="my-0 py-0">{{ form.prep_time.label }}</small> {{ form.prep_time() }}
             </div>
-            <p class="text-center" style="backround-color:blue">INGRIDIENTS</p>
+            <p class="text-center" style="backround-color:blue">Ингридиенты</p>
             <input type="button" class="btn btn-outline-primary my-2 add-ingridients" value="Add ingridient">
 
             <div class="ingridients-list">
@@ -111,6 +111,7 @@
                     {% if (subf.widget.input_type != 'hidden') %}
                     {% endif %}
                     {{ subf(class_="m-2") }}
+
                     {% endfor %}
                     <input type="button" class="btn btn-outline-danger ml-2 delete-ingridient" id="del-ingridient-0" value="X">
                 </div>
@@ -123,10 +124,14 @@
                 <div class="d-flex flex-row my-2 step-form" id="step-form-1">
                     <div class="dropzone" id="stepPhoto-1">
                     </div>
-                    {{ form.photo(id="photo-1") }}
-                    {{ form.step(class="form-control step",id="step-1",style="border-radius:20px") }}
+                    {% for f in form.steps %}
+                    {% for subf in f %}
+                    {{ subf(class_ = "m-2")}}
+                    {#{{ form.photo(id="photo-1",_name="photo-1") }}
+                    {{ form.step(class="form-control step",id="step-1",style="border-radius:20px",_name="step-1") }}#}
+                    {% endfor %}
+                    {% endfor %}
                     <input type="button" class="btn btn-outline-danger ml-2 delete-step" id="del-step-0" value="X">
-
                 </div>
             </div>
             <input type="button" class="btn btn-outline-primary my-2 add-step" value="Add step">
@@ -138,6 +143,11 @@
     {% endif %}
 </div>
 <script>
+
+    $('.select-ingridient').select2({
+        placeholder: 'Select ingridient',
+        theme: 'bootstrap'
+    });
 
     $("div#stepPhoto-1").dropzone({
         url:"{{ url_for('recipeapp.upload_photo')}}",
@@ -152,18 +162,21 @@
 
         init: function(){
             var dropzone=this;
-            $("#submit_recipe").on("click", function(e){
-                e.preventDefault();
-                e.stopPropagation();
-                dropzone.processQueue();
-            });
+            {#$("#submit_recipe").on("click", function(e){
+            e.preventDefault();
+             e.stopPropagation();
+             dropzone.processQueue();
+            });#}
 
+            input = $('div.step-form').children('#photo-1');
             this.on('success',function(file, message){
                 if(this.files.length>1){
                     this.removeFile(this.files[0]);
                 }
-                input = $(dropzone).siblings('div.dz-preview');
-                console.log(input);
+                $(input).val(this.files[0].name);
+            });
+            this.on('removedfile', function(file){
+                $(input).val('no-photo');
             });
 
         }
@@ -173,31 +186,46 @@
 
     $(document).ready(function(){
 
+/*        $('#new_recipe_form').submit(function(e){
+            e.preventDefault();
+            var data = JSON.stringify($(this).serializeArray());
+            console.log(data);
+            return false;
+        });
+*/
         $('.duration-picker').durationPicker({
             showDays:false,
-            showSeconds:false
+            showSeconds:false,
+            onChanged: function(value, isInitializing){
+                $('#prep_time').attr('value',value);
+            }
+
         });
+        $('#prep_time').data('durationPicker').setValue(0);
         //$('.hidden').hide();
 
         $('.select-ingridient').select2({
-            placeholder: 'Select ingridient'
+            placeholder: 'Select ingridient',
+            theme: 'bootstrap'
         });
 
         if($('.delete-ingridient').length < 2 ){$('.delete-ingridient').hide();}
         if($('.delete-step').length < 2 ){$('.delete-step').hide();}
 
         var ingridients_index=0;
-        var steps_index=1;
-        
+        var steps_index=0;
+
         $(".add-step").click(function(){
             steps_index++;
 
             var newForm=$('.step-form:first').clone(true,true);
             $('.steps-list').append(newForm);
-            $(newForm).find('textarea.step').attr('id','step-'+steps_index);
+            $(newForm).find('textarea').attr('id','steps-'+steps_index+'-description').attr('name','step-'+steps_index+'-description');
             $(newForm).find('.dropzone').remove();
             $('<div/>').addClass('dropzone').attr('id','stepPhoto-'+steps_index).prependTo(newForm);
             $(newForm).attr("id",'step-form-'+steps_index);
+            $(newForm).find('.step-photo').attr('id','steps-'+steps_index+'-photo').attr('name','steps-'+steps_index+'-photo');
+            $(newForm).find('input:hidden').attr('id','steps-'+steps_index+'-csrf_token').attr('name','steps-'+steps_index+'-csrf_token')
             $(newForm).find('#stepPhoto-'+steps_index).dropzone({
                 url:"{{ url_for('recipeapp.upload_photo')}}",
                 uploadMultiple: false,
@@ -211,24 +239,27 @@
 
                 init: function(){
                     var dropzone=this;
-                    $("#submit_recipe").on("click", function(e){
-                        e.preventDefault();
-                        e.stopPropagation();
-                        dropzone.processQueue();
-                    });
-
+                    {#$("#submit_recipe").on("click", function(e){
+                    e.preventDefault();
+                     e.stopPropagation();
+                     dropzone.processQueue();
+                    });#}
+                    input = $('div.step-form').children('#photo-'+steps_index);
                     this.on('success',function(file, message){
                         console.log(this.files);
                         if(this.files.length>1){
                             this.removeFile(this.files[0]);
                         }
-                        console.log(this.files);
+                        $(input).val(this.files[0].name);
+                    });
+                    this.on('removedfile', function(file){
+                        $(input).val('no-photo');
                     });
 
                 }
 
             });
-            
+
             if($('.delete-step').length > 1 ){$('.delete-step').show();}
 
 
@@ -248,11 +279,17 @@
                 formatNoMatches: function(){
                     return "No Match";
                 },
-                placeholder: 'Ingridient..'
+                placeholder: 'Ingridient..',
+                theme: 'bootstrap'
             });
-            $(newForm).find('#ingridients-0-name').attr("id",'ingridients-'+ingridients_index+'-name');
-            $(newForm).find('#ingridients-0-quantity').attr("id",'ingridients-'+ingridients_index+'-quantity');
-            $(newForm).find('#ingridients-0-unit').attr("id",'ingridients-'+ingridients_index+'-unit');
+            $(newForm).find('#ingridients-0-name').attr("id",'ingridients-'+ingridients_index+'-name').attr('name','ingridients-'+ingridients_index+'-name');
+
+            $(newForm).find('#ingridients-0-quantity').attr("id",'ingridients-'+ingridients_index+'-quantity').attr('name','ingridients-'+ingridients_index+'-quantity');
+
+            $(newForm).find('#ingridients-0-unit').attr("id",'ingridients-'+ingridients_index+'-unit').attr('name','ingridients-'+ingridients_index+'-unit');
+
+            $(newForm).find('input:hidden').attr("id",'ingridients-'+ingridients_index+'-csrf_token').attr('name','ingridients-'+ingridients_index+'-csrf_token');
+
             if($('.delete-ingridient').length > 1 ){$('.delete-ingridient').show();}
 
             //$("#ingridient-form-0").clone(true,true).attr("id","ingridient-form-"+ingridients_index).appendTo(".ingridients-list");

@@ -4,12 +4,15 @@ from . import recipeapp
 import os
 import simplejson as json
 import datetime
+import wtforms_json
 from forms import IngridientForm, StepForm, RecipeForm
 from .. import db
 from ..models import Recipes, Ingridients, Steps, StepPhotos, RecipePhotos,IngidientList
 #from ..models import RecipesSchema, IngridientsSchema, StepsSchema, StepsPhotosSchema, RecipePhotosSchema, IngridientListSchema
 
 import constants
+
+
 
 UPLOAD_FOLDER = '/var/uploads/'
 
@@ -44,9 +47,11 @@ def new_ingridient():
 @recipeapp.route('/new-recipe',methods = ['GET','POST'])
 def new_recipe():
     form = RecipeForm()
-    if request.method=='POST':
-        f = request.files['photo']
-        f.save(os.path.join(UPLOAD_FOLDER, f.filename))
+    if form.validate_on_submit():
+        flash('Recipe added successfully!','alert-success')
+        return redirect(url_for('recipeapp.new_recipe',form=form))
+    if form.errors:
+        flash(form.errors,'alert-danger')
     return render_template('recipeapp/editor.html',form=form)
 
 @recipeapp.route('/upload-photo',methods = ['GET','POST'])

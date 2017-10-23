@@ -8,8 +8,10 @@ from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from ..models import Recipes, Ingridients, Steps, StepPhotos, RecipePhotos,IngidientList
 import constants
+import wtforms_json
 
 images = UploadSet('images',IMAGES)
+wtforms_json.init()
 
 def query_ingridients():
     return Ingridients.query
@@ -21,24 +23,25 @@ class IngridientForm(FlaskForm):
 
 class StepForm(FlaskForm):
     description = TextAreaField('Description',render_kw={"placeholder":"What to do..","class":"form-control"})    
-    photo = FileField('Picture',validators = [FileRequired(),FileAllowed(images,'Images only!')])
+    photo = HiddenField('Photo-1',render_kw={"class":"step-photo"})
     
 class RecipeIngridientForm(FlaskForm):
-    name = QuerySelectField('Ingridient',query_factory=query_ingridients,  get_label='name',allow_blank=False, render_kw={"class":"form-control select-ingridient"})
-    quantity = IntegerField('Quantity',render_kw={"class":"form-control"})
-    unit = SelectField('Units',choices=[(item,item) for item in constants.units],render_kw={"class":"form-control"})
+    name = QuerySelectField('Ingridient',query_factory=query_ingridients,  get_label='name',allow_blank=False, render_kw={"class":"form-control select-ingridient col-3"})
+    quantity = IntegerField('Quantity',default=0,render_kw={"class":"form-control col-2"})
+    unit = SelectField('Units',choices=[(item,item) for item in constants.units],render_kw={"class":"form-control col-2"})
 
 class RecipeForm(FlaskForm):
-    name = StringField('Recepie',validators = [DataRequired('Название рецепта')], render_kw={"class":"form-control"})
+    name = StringField('Recepie', render_kw={"class":"form-control"})
     category = SelectField('Category', choices=[(item,item) for item in constants.categories],render_kw={"class":"form-control"})
     subcategory = SelectField('Sub-category', choices=[(item,item) for item in constants.subcategories],render_kw={"class":"form-control"})
     cuisine = SelectField('Cuisine', choices=[(item,item) for item in constants.cuisine],render_kw={"class":"form-control"})
     description = TextAreaField('Recipe description', render_kw={"placeholder":"Description..","class":"form-control"})
-    prep_time =IntegerField('Cooking time',render_kw={"class":"form-control duration-picker","type":"range"})
+    prep_time =IntegerField('Cooking time',render_kw={"class":"form-control duration-picker"})
     favourite = BooleanField('Favourite',render_kw={"class":"form-check-input"})
     
     ingridients = FieldList(FormField(RecipeIngridientForm,render_kw={"class":"form-group"}),min_entries=1)
-    step = TextAreaField('Description',render_kw={"placeholder":"What to do..","class":"form-control"})
-    photo = HiddenField('Photo-1')
+    steps = FieldList(FormField(StepForm, render_kw={"class":"form-group"}),min_entries=1)
+    #step = TextAreaField('Description',render_kw={"placeholder":"What to do..","class":"form-control"})
+    #photo = HiddenField('Photo-1',render_kw={"class":"step-photo"})
     
     
