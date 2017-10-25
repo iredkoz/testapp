@@ -1,9 +1,9 @@
 class Config(object):
     DEBUG = False
     
-    
 class DevelopmentConfig(Config):
     SQLALCHEMY_ECHO = True
+    DEBUG = True
 
 class ProductionConfig(Config):
     DEBUG = False

@@ -72,6 +72,15 @@
     <form method="post" action="/new-recipe" id="new_recipe_form">
         <div class="form-group">
             {{ form.csrf_token }}
+
+            <div class="">
+                <div class="dropzone" id="recipePhotos">
+                </div>
+
+                {% for f in form.photos %}
+                {{ f }}
+                {% endfor %}
+            </div>
             <div class="d-flex flex-row justify-content-start">
                 <div class="form-group">
                     <small class="my-0 py-0">{{ form.name.label }}</small> {{ form.name(size=20) }}
@@ -121,18 +130,16 @@
 
             <p class="text-center" style="backround-color:blue">Пошаговая инструкция</p>
             <div class="steps-list">
-                <div class="d-flex flex-row my-2 step-form" id="step-form-1">
-                    <div class="dropzone" id="stepPhoto-1">
-                    </div>
                     {% for f in form.steps %}
+                <div class="d-flex flex-row my-2 step-form" id="step-form-0">
+                    <div class="dropzone" id="stepPhoto-0">
+                    </div>
                     {% for subf in f %}
                     {{ subf(class_ = "m-2")}}
-                    {#{{ form.photo(id="photo-1",_name="photo-1") }}
-                    {{ form.step(class="form-control step",id="step-1",style="border-radius:20px",_name="step-1") }}#}
-                    {% endfor %}
                     {% endfor %}
                     <input type="button" class="btn btn-outline-danger ml-2 delete-step" id="del-step-0" value="X">
                 </div>
+                    {% endfor %}
             </div>
             <input type="button" class="btn btn-outline-primary my-2 add-step" value="Add step">
 
@@ -143,56 +150,83 @@
     {% endif %}
 </div>
 <script>
-
-    $('.select-ingridient').select2({
-        placeholder: 'Select ingridient',
-        theme: 'bootstrap'
-    });
-
-    $("div#stepPhoto-1").dropzone({
-        url:"{{ url_for('recipeapp.upload_photo')}}",
-        uploadMultiple: false,
-        addRemoveLinks: true,
-        createImageThumbnails: true,
-        thumbnailWidth: 350,
-        //thumbnailHeight: 250,
-        thumbnailMethod: "contain",
-        acceptedFiles:".jpeg, .jpg, .png, .gif, .JPEG, .JPG, .PNG, .GIF",
-        autoProcessQueue: true,
-
-        init: function(){
-            var dropzone=this;
-            {#$("#submit_recipe").on("click", function(e){
-            e.preventDefault();
-             e.stopPropagation();
-             dropzone.processQueue();
-            });#}
-
-            input = $('div.step-form').children('#photo-1');
-            this.on('success',function(file, message){
-                if(this.files.length>1){
-                    this.removeFile(this.files[0]);
-                }
-                $(input).val(this.files[0].name);
-            });
-            this.on('removedfile', function(file){
-                $(input).val('no-photo');
-            });
-
-        }
-
-    });
-
-
+    Dropzone.autoDiscover = false;
     $(document).ready(function(){
 
-/*        $('#new_recipe_form').submit(function(e){
-            e.preventDefault();
-            var data = JSON.stringify($(this).serializeArray());
-            console.log(data);
-            return false;
+        $('.select-ingridient').select2({
+            placeholder: 'Select ingridient',
+            theme: 'bootstrap'
         });
-*/
+
+        var recipeDropzone = $('div#recipePhotos').dropzone({
+            url:"{{ url_for('recipeapp.upload_photo') }}",
+            uploadMultiple: false,
+            addRemoveLinks: true,
+            createImageThumbnails: true,
+            thumbnailWidth: 350,
+            thumbnailMethod: "contain",
+            acceptedFiles:".jpeg, .jpg, .png, .gif, .JPEG, .JPG, .PNG, .GIF",
+            autoProcessQueue: true,
+            maxFiles: 3,
+
+            init: function(){
+                var dropzone = this;
+                $('#new_recipe_form').submit(function(e){
+                    e.preventDefault();
+                    dz_files=dropzone.files;
+                    $.each(dz_files,function(i, file){
+                        $('input#photos-'+i).val(file.name);
+                    })
+                    //var data = JSON.stringify($(this).serializeArray());
+                    //console.log(data);
+                    //return false;
+
+                    $('#new_recipe_form')[0].submit();
+                });
+
+                //            $("#submit_recipe").on("click", function(e){
+                //                e.preventDefault();
+                //                e.stopPropagation();
+                //                dropzone.processQueue();
+                //            });
+            }
+        });
+
+        $("div#stepPhoto-0").dropzone({
+            url:"{{ url_for('recipeapp.upload_photo') }}",
+            uploadMultiple: false,
+            addRemoveLinks: true,
+            createImageThumbnails: true,
+            thumbnailWidth: 350,
+            //thumbnailHeight: 250,
+            thumbnailMethod: "contain",
+            acceptedFiles:".jpeg, .jpg, .png, .gif, .JPEG, .JPG, .PNG, .GIF",
+            autoProcessQueue: true,
+
+            init: function(){
+                var dropzone=this;
+//                            $("#submit_recipe").on("click", function(e){
+//                            e.preventDefault();
+//                             e.stopPropagation();
+//                             dropzone.processQueue();
+//                            });
+
+                input = $('div.step-form').children('.step-photo');
+                this.on('success',function(file, message){
+                    if(this.files.length>1){
+                        this.removeFile(this.files[0]);
+                    }
+                    $(input).val(this.files[0].name);
+                });
+                this.on('removedfile', function(file){
+                    $(input).val('no-photo');
+                });
+
+            }
+
+        });
+
+
         $('.duration-picker').durationPicker({
             showDays:false,
             showSeconds:false,
@@ -201,6 +235,7 @@
             }
 
         });
+
         $('#prep_time').data('durationPicker').setValue(0);
         //$('.hidden').hide();
 
@@ -225,7 +260,9 @@
             $('<div/>').addClass('dropzone').attr('id','stepPhoto-'+steps_index).prependTo(newForm);
             $(newForm).attr("id",'step-form-'+steps_index);
             $(newForm).find('.step-photo').attr('id','steps-'+steps_index+'-photo').attr('name','steps-'+steps_index+'-photo');
-            $(newForm).find('input:hidden').attr('id','steps-'+steps_index+'-csrf_token').attr('name','steps-'+steps_index+'-csrf_token')
+            
+            $(newForm).find('input:hidden').not('.step-photo').attr('id','steps-'+steps_index+'-csrf_token').attr('name','steps-'+steps_index+'-csrf_token')
+            
             $(newForm).find('#stepPhoto-'+steps_index).dropzone({
                 url:"{{ url_for('recipeapp.upload_photo')}}",
                 uploadMultiple: false,
@@ -239,11 +276,6 @@
 
                 init: function(){
                     var dropzone=this;
-                    {#$("#submit_recipe").on("click", function(e){
-                    e.preventDefault();
-                     e.stopPropagation();
-                     dropzone.processQueue();
-                    });#}
                     input = $('div.step-form').children('#photo-'+steps_index);
                     this.on('success',function(file, message){
                         console.log(this.files);

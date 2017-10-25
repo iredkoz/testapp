@@ -23,14 +23,15 @@ class IngridientForm(FlaskForm):
 
 class StepForm(FlaskForm):
     description = TextAreaField('Description',render_kw={"placeholder":"What to do..","class":"form-control"})    
-    photo = HiddenField('Photo-1',render_kw={"class":"step-photo"})
+    photo = HiddenField('Photo-1',default="no-photo",render_kw={"class":"step-photo"})
     
 class RecipeIngridientForm(FlaskForm):
     name = QuerySelectField('Ingridient',query_factory=query_ingridients,  get_label='name',allow_blank=False, render_kw={"class":"form-control select-ingridient col-3"})
     quantity = IntegerField('Quantity',default=0,render_kw={"class":"form-control col-2"})
     unit = SelectField('Units',choices=[(item,item) for item in constants.units],render_kw={"class":"form-control col-2"})
-
+    
 class RecipeForm(FlaskForm):
+    photos = FieldList(HiddenField('Recipe Photos',default="no-photo",render_kw={"class":"form-group"}),min_entries=3)
     name = StringField('Recepie', render_kw={"class":"form-control"})
     category = SelectField('Category', choices=[(item,item) for item in constants.categories],render_kw={"class":"form-control"})
     subcategory = SelectField('Sub-category', choices=[(item,item) for item in constants.subcategories],render_kw={"class":"form-control"})
