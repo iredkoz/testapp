@@ -100,16 +100,9 @@ class Steps(db.Model):
     description = db.Column('description',db.String(2048))
     recipe_id = db.Column('recipe_id',db.Integer,db.ForeignKey('recipes.id'))
     recipe = db.relationship('Recipes',foreign_keys=recipe_id,backref='step_recipes')
+    photo_id = db.Column('photo_id', db.Integer, db.ForeignKey('photos.id'))
+    photo = db.relationship('Photos', foreign_keys = photo_id, backref='step_photo')
     
-class StepPhotos(db.Model):
-    __tablename__='step_photos'
-    __bind_key__='recipe'
-    id = db.Column('id',db.Integer,primary_key=True)
-    step_id = db.Column('step_id',db.Integer,db.ForeignKey('steps.id'))
-    step = db.relationship('Steps',foreign_keys=step_id,backref='step_photo_steps')
-    photo_id = db.Column('photo_id',db.Integer,db.ForeignKey('photos.id'))
-    photo = db.relationship('Photos',foreign_keys=photo_id,backref='step_photo_photos')
-
 class RecipePhotos(db.Model):
     __tablename__='recipe_photos'
     __bind_key__='recipe'

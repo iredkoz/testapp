@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import render_template, request, redirect, flash,url_for, jsonify, app
+from flask import render_template, request, redirect, flash,url_for, jsonify, app, send_from_directory
 from . import recipeapp
 import os
 import simplejson as json
@@ -7,7 +7,7 @@ import datetime
 import wtforms_json
 from forms import IngridientForm, StepForm, RecipeForm
 from .. import db
-from ..models import Recipes, Ingridients, Steps, StepPhotos, RecipePhotos,IngidientList, Photos
+from ..models import Recipes, Ingridients, Steps, RecipePhotos,IngidientList, Photos
 #from ..models import RecipesSchema, IngridientsSchema, StepsSchema, StepsPhotosSchema, RecipePhotosSchema, IngridientListSchema
 from werkzeug.utils import secure_filename
 import constants
@@ -29,14 +29,17 @@ def recipes_main():
 
 @recipeapp.route('/recipes/<cat>')
 def category(cat):
-    items = Recipes.query.filter_by(category=cat).all()
-    return render_template('recipeapp/category.html',cat=cat)
+    recipes = Recipes.query.filter_by(category=cat).all()
+    return render_template('recipeapp/category.html',cat=cat, recipes=recipes)
 
 @recipeapp.route('/recipes/<int:recipe_id>')
 def show_recipe(recipe_id):
     recipe = Recipes.query.get(recipe_id)
     steps = Steps.query.filter_by(recipe = recipe).all()
-    return render_template('recipeapp/recipe.html',recipe=recipe,steps=steps)
+    r_photos = RecipePhotos.query.filter_by(recipe = recipe).all()
+    ingridients = IngidientList.query.filter_by(recipe_id=recipe.id).all()
+    
+    return render_template('recipeapp/recipe.html',recipe=recipe,steps=steps,ingridients=ingridients,photos=r_photos)
 
 @recipeapp.route('/new-ingridient',methods = ['GET','POST'])
 def new_ingridient():
@@ -55,7 +58,7 @@ def new_ingridient():
 def new_recipe():
     form = RecipeForm()
     if form.validate_on_submit():
-        recipe = Recipes(name=form.name.data,note=form.description.data, category=form.category.data, subcategory=form.subcategory.data, food_type=form.cuisine.data,prep_time=form.prep_time.data,favourite=form.favourite)
+        recipe = Recipes(name=form.name.data,note=form.description.data, category=form.category.data, subcategory=form.subcategory.data, food_type=form.cuisine.data,prep_time=form.prep_time.data,favourite=form.favourite.data)
         db.session.add(recipe)        
         db.session.flush()
         for p in form.photos.entries:
@@ -70,17 +73,15 @@ def new_recipe():
             db.session.add(i_list)
             db.session.flush()
             
-        for s in form.steps.entries:
-            s_list = Steps(description = s.data['description'], recipe_id=recipe.id)
+        for idx, s in enumerate(form.steps.entries):
+            s_name = "Step-"+str(idx+1)
+            s_list = Steps(description = s.data['description'], recipe_id=recipe.id, name=s_name)
             db.session.add(s_list)
             db.session.flush()
-            logging.debug(s.data['photo'])
-            photo = Photos.query.filter_by(filename=s.data['photo']).first()
             
+            photo = Photos.query.filter_by(filename=s.data['photo']).first()
             if photo:
-                s_photo = StepPhotos(step_id = s_list.id, photo_id=photo.id)
-                db.session.add(s_photo)
-                db.session.flush()
+                s_list.photo_id = photo.id
         db.session.commit()
         flash('Recipe added successfully!','alert-success')
         return redirect(url_for('recipeapp.new_recipe'))
@@ -99,3 +100,6 @@ def upload_photo():
             db.session.commit()
     return ('',204)
 
+@recipeapp.route('/img/<path:path>')
+def send_img(path):
+    return send_from_directory(UPLOAD_FOLDER,path)

@@ -1,3 +1,4 @@
+
 body {
     padding-top: 65px;
     background-color: #ecf0f1;
@@ -125,7 +126,7 @@ p,a {
 .dropzone:hover{
     border:2px dotted #0086B3;
 }
-
+/*
 .favourite-lbl input[type="checkbox"],
 .favourite-lbl .checked{
     display:none;
@@ -140,6 +141,13 @@ p,a {
 {
     display: none;
 }
+*/
+input[type=checkbox]{ display: none; }
+input[type=checkbox] + label:before{ content: "\f08a"; font-family: FontAwesome; color:#79a5bd; font-size: 36px;}
+input[type=checkbox] + label:before{ letter-spacing: 10px; }
+input[type=checkbox]:checked + label:before { content: "\f004"; font-family: FontAwesome; color:#79a5bd; font-size: 36px;}
+input[type=checkbox]:checked + label:before { letter-spacing: 5px;}
+
 
 .select2-container--bootstrap .select2-selection--single 
 {

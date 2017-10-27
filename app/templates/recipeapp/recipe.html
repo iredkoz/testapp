@@ -1,5 +1,5 @@
-% extends "base.html" %}
-{% block title %} Add new stuff {% endblock %}
+{% extends "base.html" %}
+{% block title %} Recipe {% endblock %}
 
 {% block head %}
 {{super()}}
@@ -7,7 +7,81 @@
 
 
 {% block content %}
-<div class="container">
-    <h5>Add new ingridients and recipes!</h5>
+<div class="container-fluid">
+    <nav class="navbar" id="main-menu" style="border-radius:20px">
+        <a class="navbar-brand" href="{{ url_for('recipeapp.recipes_main') }}">
+            <i class="fa fa-chevron-left" aria-hidden="true"></i>
+            Recepies
+        </a>
+        <span class="navbar-text pull-left">
+            / {{ cat }}
+        </span>
+        <form class="form-inline">
+            <div class="input-group">
+                <input class="form-control" type="text" placeholder="Search" aria-label="Search">
+                <span class="input-group-btn">
+                    <button class="btn btn-outline-light" type="submit">Go!</button>
+                </span>
+            </div>
+        </form>
+    </nav>
 </div>
+
+<div class="container-fluid mr-2 my-4">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for c,m in messages %}
+        <div class="alert {{ c }}" role="alert">
+            <button type=button class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            {{ m }}
+        </div>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+</div>
+
+<div class="container-fluid m-2">
+
+    <div id="recipeCarousel" class="carousel slide" data-ride="carousel" data-interval="5000">
+        <div class="carousel-inner">
+            {% for photo in photos %}
+            <div class="carousel-item {% if loop.first %} active {% endif %}">
+                <img class="d-block mx-auto w-50" src="{{ url_for('recipeapp.send_img', path=photo.photo.filename )}}" alt="Slide#{{loop.index}}">
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <h2 class="text-center font-effect-3d-float" style="font-family:'Merienda'; color:#79a5bd">{{ recipe.name }}</h2>
+    <div >
+        <p class="text-weight-normal" style="font-family:'Space Mono'">{{ recipe.note }}</p>
+    </div>
+
+    {{ recipe.category }}
+    {{ recipe.subcategory }}
+    {{ recipe.food_type }}
+    {{ recipe.prep_time }}
+    {{ recipe.favourite }}
+
+    <ul>
+        {% for ingridient in ingridients %}
+        <li>{{ ingridient.ingridient.name }}{{ ingridient.quantity }}{{ ingridient.unit }}</li>
+        {% endfor %}
+    </ul>    
+
+    <ul>
+        {% for step in steps %}
+        <li>{{ step.name }}{{ step.photo.filename }}{{ step.description}}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script>
+    $(document).ready(function(){
+        //$('.carousel').carousel();
+    });
+</script>
 {% endblock %}

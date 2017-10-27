@@ -43,7 +43,7 @@
     {% for recipe in recipes %}
     <div class="card">
         <div class="card-body">
-            <a href="#" class="card-link">{{ recipe.name }} </a>
+            <a href="{{ url_for('recipeapp.show_recipe',recipe_id=recipe.id)}}" class="card-link">{{ recipe.name }} </a>
             <p class="card-text">{{ recipe.note }}</p>
         </div>            
     </div>    

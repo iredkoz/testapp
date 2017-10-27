@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from flask_wtf import FlaskForm
-from flask.ext.uploads import UploadSet, IMAGES
+from flask_uploads import UploadSet, IMAGES
 from wtforms.fields import *
 from wtforms.validators import *
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from ..models import Recipes, Ingridients, Steps, StepPhotos, RecipePhotos,IngidientList
+from ..models import Recipes, Ingridients, Steps, RecipePhotos,IngidientList
 import constants
 import wtforms_json
 
