@@ -1,3 +1,6 @@
+#views.py
+# -*- coding: utf-8 -*-
+
 from flask import render_template, request, redirect, flash,url_for, jsonify
 from . import shopapp
 import simplejson as json
@@ -158,7 +161,10 @@ def newItem():
         qnty=itemForm.quantity.data
         price=itemForm.price.data
         notes=itemForm.notes.data
-        item = Item(product=product, shop = shop, qnty=qnty, price = price, chk = False, note=notes, slist=slist)
+        coupon = itemForm.coupon.data
+        if (coupon == u'нет'):
+            coupon = None
+        item = Item(product=product, shop = shop, qnty=qnty, price = price, chk = False, note=notes, slist=slist, coupon=coupon)
         db.session.add(item)
         db.session.commit()
         return redirect(url_for('shopapp.show_list',slist=slist.name))
@@ -175,6 +181,9 @@ def editItem(item_id):
         item.qnty=itemForm.quantity.data
         item.price=itemForm.price.data
         item.notes=itemForm.notes.data
+        item.coupon = itemForm.coupon.data
+        if (coupon == u'нет'):
+            coupon = None
         db.session.commit()
         return redirect(url_for('shopapp.show_list',slist=slist.name))
     else:

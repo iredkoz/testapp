@@ -39,6 +39,7 @@ class Item(db.Model):
     price = db.Column('price',db.Numeric(precision=2))
     chk = db.Column('chk',db.Boolean)
     note = db.Column('note',db.String(255))
+    coupon = db.Column('coupon',db.String(50))
     
     slist_id = db.Column('slist_id', db.Integer, db.ForeignKey('slist.id'))
     product_id=db.Column('product_id',db.Integer,db.ForeignKey('product.id'))
@@ -157,6 +158,7 @@ class ItemSchema(Schema):
     qnty = fields.Int()
     price = fields.Decimal()
     note = fields.Str()
+    coupon = fields.Str()
         
 class ListSchema(Schema):
     id = fields.Int(dump_only=True)

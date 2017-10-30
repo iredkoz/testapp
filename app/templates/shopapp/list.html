@@ -20,15 +20,16 @@
     <ul id="lists" class="list-group">
         {% for item in items %}
         <li class="list-group-item {% if item.chk %} list-group-item-success {% endif %} p-0 border-left-0 border-right-0" {% if item.chk %}style="text-decoration:line-through"{% endif %}>
-            <div class="d-flex w-100 justify-content-end">
+            <div class="d-inline-flex w-100 justify-content-end">
                 <div class="col-1 px-0 align-self-center mr-2"><form method="post" action="{{ url_for('shopapp.check_item', item_id=item.id) }}" class="col-1"><button class="btn btn-link px-0">{% if item.chk %}<i class="fa fa-check-square-o fa-2x"></i>{% else %}<i class="fa fa-square-o fa-2x"></i>{% endif %}</button></form>
                 </div>
                 <div class="col align-self-center ml-2">{{ item.product.name }}</div>
+                <div class="col align-self-center ml-2">{% if item.coupon %} {{ item.coupon }}{% endif %}</div>
                 <div class="d-flex flex-column mr-4">
                     <p id="item-price" class="my-0">${{ item.price }}</p>
-                   <p id="item-qnty" class="my-0">{{ item.qnty }}</p> 
+                    <p id="item-qnty" class="my-0">{{ item.qnty }}</p> 
                 </div>  
-                <div class="d-flex flex-row">
+                <div class="d-none d-sm-flex flex-row ">
                     <button class="btn btn-link ml-auto h-50" data-toggle="modal" data-target="#editItem" data-item-id="{{ item.id }}" data-list-id="{{ item.slist }}" data-product-name="{{ item.product.name }}" data-action="edit"><i class="fa fa-edit fa-lg"></i></button>
                     <button id="delItem" data-url="{{ url_for('shopapp.delItem', item_id = item.id) }}" class="btn btn-link mx-2 h-50 delItem"><i class="fa fa-trash fa-lg"></i></button>
                 </div>
@@ -52,14 +53,20 @@
 <form class="form-group" method="post" action="" id="editItemForm">
     {{ itemForm.csrf_token }}
     {{ itemForm.product_id}}
-
-    <div class="form-group col-6 mb-0">
-        <small class="my-0 py-0">{{ itemForm.shop.label(class='my-0') }}</small>
-        {{ itemForm.shop }}
-        {% for error in itemForm.errors.shop %}
-        <span style="color: red;">[{{error}}]</span>
-        {% endfor %}
-    </div>  
+    <div class="d-flex flex-inline py-0 my-0">
+        <div class="form-group col-6 mb-0">
+            <small class="my-0 py-0">{{ itemForm.shop.label(class='my-0') }}</small>
+            {{ itemForm.shop }}
+            {% for error in itemForm.errors.shop %}
+            <span style="color: red;">[{{error}}]</span>
+            {% endfor %}
+        </div>  
+        <div class="form-group col-4 mb-0">
+            <small class="my-0 py-0"> {{ itemForm.coupon.label(class='my-0')}} </small>
+            {{ itemForm.coupon }}
+        </div>
+             
+    </div>
     <div class="d-flex flex-inline py-0 my-0"> 
         <div class="form-group col-6 mb-0">
             <small class="my-0 py-0">{{ itemForm.quantity.label(class='my-0') }}</small>
@@ -137,14 +144,19 @@
 <form class="form-group" method="post" action="/new-item" id="newItemForm">
     {{ itemForm.csrf_token }}
     {{ itemForm.product_id}}
-
-    <div class="form-group col-6">
-        <small class="my-0 py-0">{{ itemForm.shop.label(class='my-0') }}</small>
-        {{ itemForm.shop }}
-        {% for error in itemForm.errors.shop %}
-        <span style="color: red;">[{{error}}]</span>
-        {% endfor %}
-    </div>  
+    <div class="d-flex flex-inline">
+        <div class="form-group col-6">
+            <small class="my-0 py-0">{{ itemForm.shop.label(class='my-0') }}</small>
+            {{ itemForm.shop }}
+            {% for error in itemForm.errors.shop %}
+            <span style="color: red;">[{{error}}]</span>
+            {% endfor %}
+        </div>  
+        <div class="form-group col-4">
+            <small class="my-0 py-0">{{ itemForm.coupon.label(class='my-0')}}</small>
+            {{ itemForm.coupon }}
+        </div>
+    </div>
     <div class="d-flex flex-inline"> 
         <div class="form-group col-6">
             <small class="my-0 py-0">{{ itemForm.quantity.label(class='my-0') }}</small>
@@ -195,7 +207,7 @@
             }
 
         });
-        
+
         $('#ItemsInCategory').on('show.bs.modal',function(event){
 
             var button=$(event.relatedTarget);
@@ -220,13 +232,13 @@
             });
 
         });
-        
+
         $('#editItem').on('show.bs.modal',function(e){
             var button=$(e.relatedTarget);
             var item_id=button.data('item-id')
             var url=$(location).attr('href')
             var list_name = url.substring(url.lastIndexOf('/') + 1);
-            
+
             $.getJSON($SCRIPT_ROOT+'/_get_item',{
                 item_id: item_id,
             },
@@ -234,15 +246,16 @@
                 item=data.data;
                 $("#editItemForm").attr("action","/edit-item/"+item_id);
                 $("#editItemForm select[id=shop]").find('option:contains("'+item.shop+'")').attr("selected",true);
+                $("#editItemForm select[id=coupon]").find('option:contains("'+item.coupon+'")').attr("selected",true);
                 $("#editItemForm input[id=notes]").val(item.note);
                 $("#editItemForm input[id=price]").val(item.price);
                 $("#editItemForm input[id=quantity]").val(item.qnty);
                 $("#editItem h5").text(item.product);
 
             });
-            
+
         });
-        
+
         $('#newItem').on('show.bs.modal',function(e){
 
             var button=$(e.relatedTarget);
@@ -252,7 +265,7 @@
 
             $('#newItemForm input[id=product_id]').val(product_name);
             $('#newItemForm input[id=slist_id]').val(list_name);
-            
+
         });
 
         $('.delItem').on('click',function(){
@@ -264,10 +277,10 @@
 
             }
         });
-        
-         $('#price_qnty').on('hidden.bs.modal',function(){
+
+        $('#price_qnty').on('hidden.bs.modal',function(){
             $(this).find('form')[0].reset();
-         });        
+        });        
     });
 </script>
 {% endblock %}

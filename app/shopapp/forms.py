@@ -1,3 +1,5 @@
+#forms.py
+# -*- coding: utf-8 -*-
 from flask_wtf import FlaskForm
 from wtforms.fields import *
 from wtforms.validators import *
@@ -7,6 +9,8 @@ from ..models import Category,Shop
 
 units = ['lb','oz','gal','qt','pt','fl oz','kg','g','L','ml','box','each','bag','cart',
          'm','cm','mm','inch','ft','yard']
+
+coupons = [u'нет',u'Мп',u'Мк',u'K']
 
 def query_category():
     return Category.query
@@ -40,4 +44,5 @@ class ItemForm(FlaskForm):
     quantity = IntegerField('Quantity',render_kw={"class":"form-control"})
     price = DecimalField('Price',render_kw={"class":"form-control"})
     notes = TextAreaField('Note',render_kw={"class":"form-control"})
+    coupon = SelectField('Coupon', choices=[(item,item) for item in coupons],render_kw={"class":"form-control"})
     
