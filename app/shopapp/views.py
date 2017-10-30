@@ -181,9 +181,10 @@ def editItem(item_id):
         item.qnty=itemForm.quantity.data
         item.price=itemForm.price.data
         item.notes=itemForm.notes.data
-        item.coupon = itemForm.coupon.data
+        coupon = itemForm.coupon.data
         if (coupon == u'нет'):
             coupon = None
+        item.coupon=coupon
         db.session.commit()
         return redirect(url_for('shopapp.show_list',slist=slist.name))
     else:

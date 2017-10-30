@@ -16,28 +16,46 @@
     </nav>
 </div>
 
-<div class="container-fluid my-1">
-    <ul id="lists" class="list-group">
-        {% for item in items %}
-        <li class="list-group-item {% if item.chk %} list-group-item-success {% endif %} p-0 border-left-0 border-right-0" {% if item.chk %}style="text-decoration:line-through"{% endif %}>
-            <div class="d-inline-flex w-100 justify-content-end">
-                <div class="col-1 px-0 align-self-center mr-2"><form method="post" action="{{ url_for('shopapp.check_item', item_id=item.id) }}" class="col-1"><button class="btn btn-link px-0">{% if item.chk %}<i class="fa fa-check-square-o fa-2x"></i>{% else %}<i class="fa fa-square-o fa-2x"></i>{% endif %}</button></form>
-                </div>
-                <div class="col align-self-center ml-2">{{ item.product.name }}</div>
-                <div class="col align-self-center ml-2">{% if item.coupon %} {{ item.coupon }}{% endif %}</div>
-                <div class="d-flex flex-column mr-4">
-                    <p id="item-price" class="my-0">${{ item.price }}</p>
-                    <p id="item-qnty" class="my-0">{{ item.qnty }}</p> 
-                </div>  
-                <div class="d-none d-sm-flex flex-row ">
-                    <button class="btn btn-link ml-auto h-50" data-toggle="modal" data-target="#editItem" data-item-id="{{ item.id }}" data-list-id="{{ item.slist }}" data-product-name="{{ item.product.name }}" data-action="edit"><i class="fa fa-edit fa-lg"></i></button>
-                    <button id="delItem" data-url="{{ url_for('shopapp.delItem', item_id = item.id) }}" class="btn btn-link mx-2 h-50 delItem"><i class="fa fa-trash fa-lg"></i></button>
-                </div>
+<div class="container-fluid my-1" id="mainContainer">
+    {% for group in items|groupby('shop.name') %}
+    <h5 class="text-left mt-2 mb-0" id="shopName">{{ group.grouper}} </h5>
+    {% for item in group.list %}
+    <div class="d-flex flex-row" id="itemInList" {% if item.chk %}style="text-decoration:line-through; background: #ecf0f1; color:#a3b7c9"{% endif %}>
+        <div class="col-1 px-0 align-self-center mr-2"><form method="post" action="{{ url_for('shopapp.check_item', item_id=item.id) }}" class="col-1"><button class="btn btn-link px-0">{% if item.chk %}<i class="fa fa-check-square-o fa-2x"></i>{% else %}<i class="fa fa-square-o fa-2x"></i>{% endif %}</button></form>
+        </div>
+        <div class="col-4 align-self-center font-weight-bold">{{ item.product.name }}</div>
+        <div class="col-2 align-self-center">{% if item.coupon %} {{ item.coupon }}{% endif %}</div>
+        <div class="col-2">
+            <p id="item-price" class="my-0 font-weight-bold">${{ item.price }}</p>
+            <p id="item-qnty" class="my-0 font-weight-bold">{{ item.qnty }}</p> 
+        </div>  
+        <div class="col-4 d-none d-sm-block">
+            <button class="btn btn-link ml-auto h-50" data-toggle="modal" data-target="#editItem" data-item-id="{{ item.id }}" data-list-id="{{ item.slist }}" data-product-name="{{ item.product.name }}" data-action="edit"><i class="fa fa-edit fa-lg"></i></button>
+            <button id="delItem" data-url="{{ url_for('shopapp.delItem', item_id = item.id) }}" class="btn btn-link mx-2 h-50 delItem"><i class="fa fa-trash fa-lg"></i></button>
+        </div>
+    </div>
+    {% endfor %}
+    {% endfor %}
+    {#<ul id="lists" class="list-group">
+    {% for item in items|sort(attribute='shop') %}
+    <li class="list-group-item {% if item.chk %} list-group-item-success {% endif %} p-0 border-left-0 border-right-0" {% if item.chk %}style="text-decoration:line-through"{% endif %}>
+        <div class="d-inline-flex w-100 justify-content-end">
+            <div class="col-1 px-0 align-self-center mr-2"><form method="post" action="{{ url_for('shopapp.check_item', item_id=item.id) }}" class="col-1"><button class="btn btn-link px-0">{% if item.chk %}<i class="fa fa-check-square-o fa-2x"></i>{% else %}<i class="fa fa-square-o fa-2x"></i>{% endif %}</button></form>
             </div>
-        </li>
-        {% endfor %}
-        <li> Total spent:{{ chk }}</li>
-    </ul>
+            <div class="col align-self-center">{{ item.product.name }}</div>
+            <div class="col align-self-center">{% if item.coupon %} {{ item.coupon }}{% endif %}</div>
+            <div class="d-flex flex-column mr-4">
+                <p id="item-price" class="my-0">${{ item.price }}</p>
+                <p id="item-qnty" class="my-0">{{ item.qnty }}</p> 
+            </div>  
+            <div class="d-none d-sm-flex flex-row ">
+                <button class="btn btn-link ml-auto h-50" data-toggle="modal" data-target="#editItem" data-item-id="{{ item.id }}" data-list-id="{{ item.slist }}" data-product-name="{{ item.product.name }}" data-action="edit"><i class="fa fa-edit fa-lg"></i></button>
+                <button id="delItem" data-url="{{ url_for('shopapp.delItem', item_id = item.id) }}" class="btn btn-link mx-2 h-50 delItem"><i class="fa fa-trash fa-lg"></i></button>
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+    </ul>#}
     <div class="d-flex justify-content-between">
         <button class="btn btn-outline-primary my-2" style="border-radius:20px" data-toggle="modal" data-target="#addItem">+Add Item</button>
         <button class="btn btn-outline-primary my-2" style="border-radius:20px" data-toggle="modal" data-target="#newProduct">+New Product</button>
@@ -65,7 +83,7 @@
             <small class="my-0 py-0"> {{ itemForm.coupon.label(class='my-0')}} </small>
             {{ itemForm.coupon }}
         </div>
-             
+
     </div>
     <div class="d-flex flex-inline py-0 my-0"> 
         <div class="form-group col-6 mb-0">

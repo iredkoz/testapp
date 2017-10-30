@@ -102,8 +102,22 @@ body {
 h1,h2,h3,h4,h5,h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family:'Imprima', sans-serif;
 }
+
 p,a {
     font-family: 'Imprima', sans-serif;
+}
+
+h5#shopName {
+    font-family: 'Merienda';
+    color:#517396;
+    text-shadow: 2px 2px 5px #79a5bd;
+}
+
+div#itemInList {
+    font-family: 'Imprima','sans-serif';
+    color: #517396;
+    background-color: #fff;
+    border-radius: 10px;
 }
 
 .btn-outline-primary {
@@ -154,3 +168,5 @@ input[type=checkbox]:checked + label:before { letter-spacing: 5px;}
     border: 1px solid rgba(0,0,0,.15);
     border-radius: .25rem;
 }
+
+
