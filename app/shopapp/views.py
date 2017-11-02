@@ -10,6 +10,16 @@ from .. import db
 from ..models import Slist, Category, Product, Item, Shop, ProductSchema, ItemSchema, ListSchema, CategorySchema, ShopSchema
 from sqlalchemy import func
 
+import logging
+import logging.handlers
+
+logger = logging.getLogger("")
+logger.setLevel(logging.DEBUG)
+handler = logging.handlers.RotatingFileHandler('/var/uploads/flask.log', maxBytes=300000, backupCount=2)
+logger.addHandler(handler)
+logging.debug('started shopapp')
+
+
 def flash_errors(form):
     for field, errors in form.errors.items():
         for error in errors:
@@ -225,7 +235,7 @@ def editProduct(prod_id):
     prodForm = ProductForm()
     prod = Product.query.get(prod_id)
     if prodForm.validate_on_submit():
-        prod.name=prodForm.name
+        prod.name=prodForm.name.data
         prod.category = prodForm.category.data
         prod.note=prodForm.note.data
         prod.size = prodForm.size.data
@@ -295,3 +305,19 @@ def get_shop():
     shop_schema=ShopSchema()
     result=shop_schema.dump(shop)
     return jsonify(data=result.data)
+
+@shopapp.route('/_update_product',methods=['GET','POST'])
+def update_product():
+    prod_id=request.form['prod_id']
+    prod = Product.query.get(prod_id)
+    if prod:
+        cat = Category.query.get(request.form['category'])
+        prod.name = request.form['name']
+        prod.category = cat
+        prod.note = request.form['note']
+        prod.size = request.form['size']
+        prod.unit = request.form['unit']
+        db.session.commit()
+        return redirect(url_for('shopapp.show_cat',cat_id=cat.id))
+    return ('',204)
+    

@@ -169,4 +169,19 @@ input[type=checkbox]:checked + label:before { letter-spacing: 5px;}
     border-radius: .25rem;
 }
 
+.ingridient-list{
+    font-family: 'Imprima','sans-serif';
+    color: #ecf0f1;
+    background-color: #517396;
+    //background-color: #fff;
+    border-radius: 6px;   
+}
 
+.steps-list-show{
+    
+    font-family: 'Imprima','sans-serif';
+    color: #ecf0f1;
+    background-color: #517396;
+    //background-color: #fff;
+    border-radius: 6px;   
+}

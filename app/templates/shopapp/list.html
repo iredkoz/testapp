@@ -18,7 +18,7 @@
 
 <div class="container-fluid my-1" id="mainContainer">
     {% for group in items|groupby('shop.name') %}
-    <h5 class="text-left mt-2 mb-0" id="shopName">{{ group.grouper}} </h5>
+    <h5 class="text-left mt-2 mb-0 py-1" id="shopName">{{ group.grouper}} </h5>
     {% for item in group.list %}
     <div class="d-flex flex-row" id="itemInList" {% if item.chk %}style="text-decoration:line-through; background: #ecf0f1; color:#a3b7c9"{% endif %}>
         <div class="col-1 px-0 align-self-center mr-2"><form method="post" action="{{ url_for('shopapp.check_item', item_id=item.id) }}" class="col-1"><button class="btn btn-link px-0">{% if item.chk %}<i class="fa fa-check-square-o fa-2x"></i>{% else %}<i class="fa fa-square-o fa-2x"></i>{% endif %}</button></form>

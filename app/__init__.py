@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
 from flask_marshmallow import Marshmallow
+from flask_wtf.csrf import CSRFProtect
 
 from config import app_config
 
@@ -14,6 +15,7 @@ ma = Marshmallow()
 
 def create_app(config_name):
     app = Flask(__name__)
+    #csrf = CSRFProtect(app)
     app.config['SQLALCHEMY_DATABASE_URI']='mysql://ilya:ilya@localhost/testapp?charset=utf8'
     app.config['SQLALCHEMY_BINDS']={'recipe':'mysql://ilya:ilya@localhost/recipe?charset=utf8'}
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS']='False'

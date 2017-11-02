@@ -40,10 +40,15 @@
     </div>
 </div>
 <div class = "container-fluid my-2">
-    {% for recipe in recipes %}
+    {% for recipe in recipes |sort(attribute='favourite', reverse=True) %}
     <div class="card">
         <div class="card-body">
-            <a href="{{ url_for('recipeapp.show_recipe',recipe_id=recipe.id)}}" class="card-link">{{ recipe.name }} </a>
+            <a href="{{ url_for('recipeapp.show_recipe',recipe_id=recipe.id)}}" class="card-link">
+                {{ recipe.name }}
+                {% if recipe.favourite %}
+                <span class="fa fa-heart-o"></span>
+                {% endif %}
+            </a>
             <p class="card-text">{{ recipe.note }}</p>
         </div>            
     </div>    

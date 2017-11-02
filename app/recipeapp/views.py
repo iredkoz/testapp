@@ -18,7 +18,7 @@ logger = logging.getLogger("")
 logger.setLevel(logging.DEBUG)
 handler = logging.handlers.RotatingFileHandler('/var/uploads/flask.log', maxBytes=300000, backupCount=2)
 logger.addHandler(handler)
-logging.debug('started blueprint')
+logging.debug('started recipeapp')
 
 UPLOAD_FOLDER = '/var/uploads/'
 
@@ -39,7 +39,7 @@ def show_recipe(recipe_id):
     r_photos = RecipePhotos.query.filter_by(recipe = recipe).all()
     ingridients = IngidientList.query.filter_by(recipe_id=recipe.id).all()
     
-    return render_template('recipeapp/recipe.html',recipe=recipe,steps=steps,ingridients=ingridients,photos=r_photos)
+    return render_template('recipeapp/recipe.html',recipe=recipe,steps=steps,ingridients=ingridients,photos=r_photos,units=constants.units)
 
 @recipeapp.route('/new-ingridient',methods = ['GET','POST'])
 def new_ingridient():

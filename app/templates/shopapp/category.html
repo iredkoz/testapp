@@ -37,6 +37,7 @@
         </div>
         {% endif %}
     </ul>
+
     <div class="d-flex justify-content-between">
         <button class="btn btn-outline-primary my-2" style="border-radius:20px" data-toggle="modal" data-target="#newProduct" data-action="new">+New Item</button>
     </div>        
@@ -80,6 +81,7 @@
 <script>
     var $SCRIPT_ROOT={{ request.script_root|tojson|safe }};
     $(document).ready(function(){
+
         $('.modal')
             .on({
             'show.bs.modal':function(){
@@ -134,14 +136,43 @@
                     $("#newProdForm input[id=size]").val(prod.size);
                     $("#newProdForm input[id=unit]").val(prod.unit);
                     $("h5").text(prod.name);
+                    $("#newProdForm button[type=submit]").attr('data-prod_id',prod_id).attr('id','update_product');
+
                 });
             }
             else{$("h5").text("Add new product");}
-        });        
-        
-         $('.modal').on('hidden.bs.modal',function(){
+        });  
+
+        $('#newProdForm').submit(function(e){
+
+            e.preventDefault();
+            var prod_id=$("#update_product").data('prod_id');
+            var data  = $(this).serializeArray();
+            data.push({name:"prod_id", value:prod_id});
+            console.log(data);
+            /*$.getJSON(
+                $SCRIPT_ROOT+'/_update_product',  
+                JSON.stringify(data) 
+            );
+            */
+            $.ajax({
+                type: 'POST',
+                data: data,
+                url: $SCRIPT_ROOT+'/_update_product',  
+                sucess: function(response){
+                    console.log(response);
+                },
+                error: function(error){
+                    console.log(error);
+                }
+            });
+            $("#update_product").attr('id','new_product');
+            window.location.reload();
+        });
+
+        $('.modal').on('hidden.bs.modal',function(){
             $(this).find('form')[0].reset();
-         });
+        });
     });
 </script>
 {% endblock %}

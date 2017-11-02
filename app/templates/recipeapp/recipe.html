@@ -44,39 +44,69 @@
     {% endwith %}
 </div>
 
-<div class="container-fluid m-2">
+<div class="container-fluid w-75">
 
-    <div id="recipeCarousel" class="carousel slide" data-ride="carousel" data-interval="5000">
+    <h2 class="text-center font-effect-3d-float p-2" style="font-family:'Merienda'; color:#ecf0f1; background-color: #517396; border-radius: 6px;">{{ recipe.name }}
+        {% if recipe.favourite %}
+        <span class="fa fa-heart-o"></span>
+        {% endif %}
+    </h2>
+
+    <div id="recipeCarousel" class="carousel slide" data-ride="carousel" data-interval="5000" style="background-color: #517396; border-radius: 6px">
         <div class="carousel-inner">
             {% for photo in photos %}
             <div class="carousel-item {% if loop.first %} active {% endif %}">
-                <img class="d-block mx-auto w-50" src="{{ url_for('recipeapp.send_img', path=photo.photo.filename )}}" alt="Slide#{{loop.index}}">
+                <img class="d-block mx-auto w-50" src="{{ url_for('recipeapp.send_img', path=photo.photo.filename )}}" alt="Slide#{{loop.index}}" style="border-radius:6px">
             </div>
             {% endfor %}
         </div>
     </div>
-    <h2 class="text-center font-effect-3d-float" style="font-family:'Merienda'; color:#79a5bd">{{ recipe.name }}</h2>
-    <div >
-        <p class="text-weight-normal" style="font-family:'Space Mono'">{{ recipe.note }}</p>
+    <hr/>
+    <div class="d-flex flex-row-reverse w-100" style="font-family:'Space Mono';color:#ecf0f1; background-color: #517396; border-radius: 6px;">
+        <span class="fa fa-clock-o fa-3x p-2"></span>
+        <div class="cooking-time p-2">
+            <h6>Приготовление </h6>
+            <p class="font-weight-bold">{{ recipe.prep_time.hour }} ч {{ recipe.prep_time.minute }} мин</p>
+        </div>
+    </div>
+    <div style="font-family:'Space Mono';color:#ecf0f1; background-color: #517396; border-radius: 6px;">
+        <h5 class="text-left p-2">Описание</h5>
+        <p class="text-weight-normal p-2" >{{ recipe.note }}</p>
     </div>
 
-    {{ recipe.category }}
-    {{ recipe.subcategory }}
-    {{ recipe.food_type }}
-    {{ recipe.prep_time }}
-    {{ recipe.favourite }}
-
-    <ul>
+    <div class="d-block ingridient-list">
         {% for ingridient in ingridients %}
-        <li>{{ ingridient.ingridient.name }}{{ ingridient.quantity }}{{ ingridient.unit }}</li>
+        <div class="row p-2">
+            <div class="col-4">
+                {{ ingridient.ingridient.name }}
+            </div>
+            <div class="col-2">
+                {{ ingridient.quantity }}
+                {{ ingridient.unit }}
+            </div>
+            <form class="form-inline" id = "calc-{{ ingridient.ingridient.id }}" hidden>
+                <div class="col2">
+                    <input class="form-control" type="number">
+                    <select class="form-control" type="text"></select>
+                </div>
+            </form>
+        </div>
         {% endfor %}
-    </ul>    
+    </div>
 
-    <ul>
-        {% for step in steps %}
-        <li>{{ step.name }}{{ step.photo.filename }}{{ step.description}}</li>
-        {% endfor %}
-    </ul>
+    <hr/>
+
+    {% for step in steps %}
+    <div class="d-flex my-2 steps-list-show">
+        <p class="text p-2"> 
+            <img class="img-fluid pull-left" src="{{ url_for('recipeapp.send_img', path=step.photo.filename )}}" style="width:200px; height: auto; border-radius: 6px; border: 2px solid #fff;">
+        <div class="mr-2">
+            {{ step.description}}
+        </div>
+        </p>
+</div>
+{% endfor %}
+
 </div>
 
 <script>
