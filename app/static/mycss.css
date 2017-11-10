@@ -120,6 +120,12 @@ div#itemInList {
     border-radius: 10px;
 }
 
+button.inverse-color{
+    color: #F6F7F5 ;
+    border-color: #F6F7F5;
+
+}
+
 .btn-outline-primary {
     color:#455b76;
     border-color: #455b76;

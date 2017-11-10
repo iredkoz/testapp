@@ -159,6 +159,7 @@ def newProduct():
             prod = Product(name=name, category = prodForm.category.data, note=prodForm.note.data, size = prodForm.size.data, unit=prodForm.unit.data)
             db.session.add(prod)
             db.session.commit()
+            return redirect(redirect_url())
     return redirect(url_for('shopapp.shop_main')) 
 
 @shopapp.route('/new-item', methods=['POST'])
@@ -320,4 +321,6 @@ def update_product():
         db.session.commit()
         return redirect(url_for('shopapp.show_cat',cat_id=cat.id))
     return ('',204)
-    
+
+def redirect_url(default='shop_main'):
+    return request.args.get('next') or request.referrer or url_for(default)

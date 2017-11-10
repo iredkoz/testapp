@@ -17,6 +17,23 @@
     </nav>
 </div>
 
+<div class="container-fluid mr-2 my-4">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for c,m in messages %}
+        <div class="alert {{ c }}" role="alert">
+            <button type=button class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            {{ m }}
+        </div>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+</div>
+
 <div class="container-fluid">
     <ul id="lists" class="list-group">
         {% if prods[0] is defined %}
@@ -39,10 +56,11 @@
     </ul>
 
     <div class="d-flex justify-content-between">
-        <button class="btn btn-outline-primary my-2" style="border-radius:20px" data-toggle="modal" data-target="#newProduct" data-action="new">+New Item</button>
+        <button class="btn btn-outline-primary my-2" style="border-radius:20px" data-toggle="modal" data-target="#newProduct" data-action="new">+New Product</button>
     </div>        
 
 </div>
+
 
 {% from 'macros.html' import make_modal %}
 
@@ -140,10 +158,13 @@
 
                 });
             }
-            else{$("h5").text("Add new product");}
+            else{
+                $("#newProduct h5").text("Add product");
+                $("#newProdForm").attr("action","/new-product");
+                }
         });  
 
-        $('#newProdForm').submit(function(e){
+        {#$('#newProdForm').submit(function(e){
 
             e.preventDefault();
             var prod_id=$("#update_product").data('prod_id');
@@ -169,6 +190,7 @@
             $("#update_product").attr('id','new_product');
             window.location.reload();
         });
+        #}
 
         $('.modal').on('hidden.bs.modal',function(){
             $(this).find('form')[0].reset();

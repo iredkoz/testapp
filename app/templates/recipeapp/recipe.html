@@ -69,27 +69,28 @@
             <p class="font-weight-bold">{{ recipe.prep_time.hour }} ч {{ recipe.prep_time.minute }} мин</p>
         </div>
     </div>
-    <div style="font-family:'Space Mono';color:#ecf0f1; background-color: #517396; border-radius: 6px;">
-        <h5 class="text-left p-2">Описание</h5>
-        <p class="text-weight-normal p-2" >{{ recipe.note }}</p>
+    <div class= "d-block" style="font-family:'Space Mono';color:#ecf0f1; background-color: #517396; border-radius: 6px;">
+        <h5 class="text-center p-2">Описание</h5>
+        <p class="text-weight-normal text-justify p-2" >{{ recipe.note }}</p>
     </div>
 
     <div class="d-block ingridient-list">
+        <h5 class="text-center p-2">Ингридиенты</h5>
         {% for ingridient in ingridients %}
-        <div class="row p-2">
-            <div class="col-4">
+        <div class="row p-2 align-items-center">
+            <div class="col-5">
                 {{ ingridient.ingridient.name }}
             </div>
             <div class="col-2">
-                {{ ingridient.quantity }}
-                {{ ingridient.unit }}
+                <span id="dflt-qnty-{{ ingridient.id }}" class='qnty'>{{ ingridient.quantity }}</span>
+                <span id="dflt-unit-{{ ingridient.id }}">{{ ingridient.unit }}</span>
             </div>
-            <form class="form-inline" id = "calc-{{ ingridient.ingridient.id }}" hidden>
-                <div class="col2">
-                    <input class="form-control" type="number">
-                    <select class="form-control" type="text"></select>
-                </div>
-            </form>
+
+            <input class="form-control-sm new-qnty invisible col-2" type="number" id="new-qnty-{{ ingridient.id }}">
+
+            <div class="col-2">
+                <button class="btn btn-outline-primary inverse-color w-100 p-2 m-2 recalc-calc" id="{{ ingridient.id }}"><i class="fa fa-pencil-square-o"></i></button>
+            </div>
         </div>
         {% endfor %}
     </div>
@@ -111,7 +112,34 @@
 
 <script>
     $(document).ready(function(){
-        //$('.carousel').carousel();
+
+        $(document).on('click','.recalc-calc',function(){
+            var id = $(this).attr('id');
+            var input = $('input#new-qnty-'+id);
+            input.removeClass('invisible');
+            $(this).removeClass('recalc-calc').addClass('recalc-ok').text('OK');
+
+        });
+
+        $(document).on('click','.recalc-ok',function(){
+            id=$(this).attr('id');
+            input = $('input#new-qnty-'+id);
+            input.addClass('invisible');
+            $(this).removeClass('recalc-ok').addClass('recalc-calc').html('<i class="fa fa-pencil-square-o"></i>');
+            var newvalue = input.val();
+            if (newvalue>0){
+                var dfltvalue = parseFloat($('#dflt-qnty-'+id).text());
+                coeff = newvalue/dfltvalue;
+                $('div.ingridient-list span.qnty').each(function(){
+                    var $span = $(this);
+                    var newval = parseFloat($span.text())*coeff;
+                    $span.text(newval.toFixed(1));
+                });
+                input.val('');
+            }
+
+        });
+
     });
 </script>
 {% endblock %}
