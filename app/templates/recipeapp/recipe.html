@@ -110,8 +110,26 @@
 
 </div>
 
+<button href="#" class="btn btn-primary-outline back-to-top">Back to Top</button>
 <script>
     $(document).ready(function(){
+        
+        var btn_offset = 220;
+        var fade_duration = 500;
+        $(window).scroll(function(){
+            if ($(this).scrollTop()>btn_offset){
+                $('.back-to-top').fadeIn(fade_duration);
+            } else {
+                $('.back-to-top').fadeOut(fade_duration);
+            }
+        });
+        
+        $('.back-to-top').on('click',function(e){
+            console.log('click');
+            e.preventDefault();
+            $('html, body').animate({scrollTop: 0}, fade_duration);
+            return false;
+        });
 
         $(document).on('click','.recalc-calc',function(){
             var id = $(this).attr('id');
@@ -139,6 +157,7 @@
             }
 
         });
+        
 
     });
 </script>
