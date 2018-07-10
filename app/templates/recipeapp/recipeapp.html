@@ -39,8 +39,9 @@
         {% endfor %}
     </div>
 </div>
+{#
 <div class = "container w-75 my-2">
-    {% for recipe in recipes |sort(attribute='favourite', reverse=True) %}
+    {% for recipe in recipes %}
     <div class="card">
         <div class="card-body">
             <a href="{{ url_for('recipeapp.show_recipe',recipe_id=recipe.id)}}" class="card-link">
@@ -49,12 +50,16 @@
                 <span class="fa fa-heart-o"></span>
                 {% endif %}
             </a>
+            {% for p in recipe.recipephotos[-1:] %}
+            <img class="img-fluid pull-right" src="{{ url_for('recipeapp.send_img', path=p.filename )}}" style="width:200px; height: auto; border-radius: 6px; border: 2px solid #fff;">
+            {% endfor %}
             <p class="card-text">{{ recipe.note }}</p>
+            
         </div>            
     </div>    
     {% endfor %}
 </div>
-
+#}
 
 
 

@@ -4,7 +4,7 @@ from marshmallow import Schema, fields, ValidationError, pre_load
 
 # shopping lists table
 class Slist(db.Model):
-    __tablename__="slist"
+    #__tablename__="slists"
     id=db.Column('id',db.Integer,primary_key=True)
     name = db.Column('name',db.String(80))
     note = db.Column('note',db.String(255))
@@ -67,6 +67,12 @@ class Finances(db.Model):
 
     shop = db.relationship('Shop',foreign_keys=shop_id, backref='finances')
     
+
+recipephotos=db.Table('recipephotos',
+                     db.Column('recipe_id', db.Integer,db.ForeignKey('recipes.id'),primary_key=True),
+                     db.Column('photo_id', db.Integer, db.ForeignKey('photos.id'),primary_key=True),
+                     info={'bind_key':'recipe'})
+
 class Recipes(db.Model):
     __tablename__='recipes'
     __bind_key__='recipe'
@@ -78,13 +84,14 @@ class Recipes(db.Model):
     food_type = db.Column('food_type',db.String(80))
     prep_time = db.Column('prep_time',db.Time)
     favourite = db.Column('favourite',db.Boolean)
+    recipephotos = db.relationship('Photos', secondary=recipephotos, lazy='dynamic',backref=db.backref('recipes',lazy='dynamic'))
 
 class Photos(db.Model):
     __tablename__='photos'
     __bind_key__='recipe'
     id = db.Column('id',db.Integer,primary_key=True)
     filename = db.Column('filename',db.String(255))
-    
+
 class Ingridients(db.Model):
     __tablename__='ingridients'
     __bind_key__='recipe'
@@ -100,18 +107,20 @@ class Steps(db.Model):
     name = db.Column('name',db.String(80))
     description = db.Column('description',db.String(2048))
     recipe_id = db.Column('recipe_id',db.Integer,db.ForeignKey('recipes.id'))
-    recipe = db.relationship('Recipes',foreign_keys=recipe_id,backref='step_recipes')
+    recipe = db.relationship('Recipes',foreign_keys=recipe_id,backref='steps')
     photo_id = db.Column('photo_id', db.Integer, db.ForeignKey('photos.id'))
-    photo = db.relationship('Photos', foreign_keys = photo_id, backref='step_photo')
+    photo = db.relationship('Photos', foreign_keys = photo_id, backref='steps')
     
-class RecipePhotos(db.Model):
-    __tablename__='recipe_photos'
-    __bind_key__='recipe'
-    id = db.Column('id',db.Integer,primary_key=True)
-    recipe_id = db.Column('recipe_id',db.Integer,db.ForeignKey('recipes.id'))
-    recipe = db.relationship('Recipes',foreign_keys=recipe_id,backref='recipe_photo_recipes')
-    photo_id = db.Column('photo_id',db.Integer,db.ForeignKey('photos.id'))
-    photo = db.relationship('Photos',foreign_keys=photo_id,backref='recipe_photo_photos')
+#class RecipePhotos(db.Model):
+#    __tablename__='recipe_photos'
+#    __bind_key__='recipe'
+#    id = db.Column('id',db.Integer,primary_key=True)
+#    
+#    recipe_id = db.Column('recipe_id',db.Integer,db.ForeignKey('recipes.id'))
+#    recipe = db.relationship(Recipes,foreign_keys=recipe_id,backref="recipe_photos")
+#    
+#    photo_id = db.Column('photo_id',db.Integer,db.ForeignKey('photos.id'))
+#    photo = db.relationship(Photos,foreign_keys=photo_id,backref="recipe_photos")
 
 class IngidientList(db.Model):
     __tablename__='ingridient_list'

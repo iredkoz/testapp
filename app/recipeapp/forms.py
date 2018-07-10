@@ -6,7 +6,7 @@ from wtforms.fields import *
 from wtforms.validators import *
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from ..models import Recipes, Ingridients, Steps, RecipePhotos,IngidientList
+from ..models import Recipes, Ingridients, Steps, IngidientList
 import constants
 import wtforms_json
 

@@ -7,7 +7,7 @@ import datetime
 import wtforms_json
 from forms import IngridientForm, StepForm, RecipeForm
 from .. import db
-from ..models import Recipes, Ingridients, Steps, RecipePhotos,IngidientList, Photos
+from ..models import Recipes, Ingridients, Steps, IngidientList, Photos
 #from ..models import RecipesSchema, IngridientsSchema, StepsSchema, StepsPhotosSchema, RecipePhotosSchema, IngridientListSchema
 from werkzeug.utils import secure_filename
 import constants
@@ -36,10 +36,10 @@ def category(cat):
 def show_recipe(recipe_id):
     recipe = Recipes.query.get(recipe_id)
     steps = Steps.query.filter_by(recipe = recipe).all()
-    r_photos = RecipePhotos.query.filter_by(recipe = recipe).all()
+    #r_photos = RecipePhotos.query.filter_by(recipe = recipe).all()
     ingridients = IngidientList.query.filter_by(recipe_id=recipe.id).all()
     
-    return render_template('recipeapp/recipe.html',recipe=recipe,steps=steps,ingridients=ingridients,photos=r_photos,units=constants.units)
+    return render_template('recipeapp/recipe.html',recipe=recipe,steps=steps,ingridients=ingridients,units=constants.units)
 
 @recipeapp.route('/new-ingridient',methods = ['GET','POST'])
 def new_ingridient():
@@ -64,8 +64,8 @@ def new_recipe():
         for p in form.photos.entries:
             photo = Photos.query.filter_by(filename=p.data).first()
             if photo:
-                p_list = RecipePhotos(recipe_id=recipe.id,photo_id=photo.id)
-                db.session.add(p_list)
+                recipe.recipephotos.append(photo)
+                db.session.add(recipe)
                 db.session.flush()
             
         for i in form.ingridients.entries:

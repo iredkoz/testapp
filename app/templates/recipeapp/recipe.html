@@ -54,9 +54,9 @@
 
     <div id="recipeCarousel" class="carousel slide" data-ride="carousel" data-interval="5000" style="background-color: #517396; border-radius: 6px">
         <div class="carousel-inner">
-            {% for photo in photos %}
+            {% for photo in recipe.recipephotos %}
             <div class="carousel-item {% if loop.first %} active {% endif %}">
-                <img class="d-block mx-auto w-50" src="{{ url_for('recipeapp.send_img', path=photo.photo.filename )}}" alt="Slide#{{loop.index}}" style="border-radius:6px">
+                <img class="d-block mx-auto w-50" src="{{ url_for('recipeapp.send_img', path=photo.filename )}}" alt="Slide#{{loop.index}}" style="border-radius:6px">
             </div>
             {% endfor %}
         </div>
@@ -105,6 +105,7 @@
             {{ step.description}}
         </div>
         </p>
+
 </div>
 {% endfor %}
 
@@ -113,7 +114,7 @@
 <button href="#" class="btn btn-primary-outline back-to-top">Back to Top</button>
 <script>
     $(document).ready(function(){
-        
+
         var btn_offset = 220;
         var fade_duration = 500;
         $(window).scroll(function(){
@@ -123,7 +124,7 @@
                 $('.back-to-top').fadeOut(fade_duration);
             }
         });
-        
+
         $('.back-to-top').on('click',function(e){
             console.log('click');
             e.preventDefault();
@@ -157,7 +158,7 @@
             }
 
         });
-        
+
 
     });
 </script>
